@@ -31,8 +31,13 @@ def fake_user():
     first_name, last_name = profile["name"].split(" ", 1) 
     gender = profile["sex"] 
     birthdate = faker.date_of_birth()
-    formatted_date = birthdate.strftime("%m/%d/%Y")
+    formatted_birthdate = birthdate.strftime("%m/%d/%Y")
     company = profile["company"]
     phone = "09763853530"
     sss_number = f"{faker.random_int(10, 99)}-{faker.random_int(1000000, 9999999)}-{faker.random_int(0, 9)}"
-    return profile, first_name, last_name, gender, company, formatted_date, phone, sss_number
+    branch = "CEBU BUSINESS PARK"
+    application_type = "New Application"
+    salutation = "Mister" if gender == "M" else "Miss"
+    civil_status = "SINGLE"
+    return profile, first_name, last_name, gender, company, formatted_birthdate, phone, sss_number, branch, application_type, civil_status
+
