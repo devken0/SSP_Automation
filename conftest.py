@@ -1,0 +1,38 @@
+import pytest
+import logging
+from faker import Faker
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from config.settings import CHROMEDRIVER_PATH, CHROMIUM_PATH, WAIT_DURATION
+
+faker = Faker("en_PH")
+
+@pytest.fixture
+def browser():
+    service = Service(CHROMEDRIVER_PATH)
+    options = Options()
+    options.BinaryLocation = CHROMIUM_PATH
+    options.add_argument('--ignore-certificate-errors') # Ignore SSL errors
+    #options.add_argument('--disable-web-security')  # Optional: Disable web security (use cautiously)
+    options.add_argument('--allow-running-insecure-content')  # Allow insecure content
+
+    driver = webdriver.Chrome(service=service, options=options)
+    wait = WebDriverWait(driver, WAIT_DURATION)
+
+    yield driver, wait # Returns both driver and wait
+
+    driver.quit()
+
+@pytest.fixture
+def fake_user():
+    profile = faker.profile()
+    first_name, last_name = profile["name"].split(" ", 1) 
+    gender = profile["sex"] 
+    birthdate = faker.date_of_birth()
+    formatted_date = birthdate.strftime("%m/%d/%Y")
+    company = profile["company"]
+    phone = "09763853530"
+    sss_number = f"{faker.random_int(10, 99)}-{faker.random_int(1000000, 9999999)}-{faker.random_int(0, 9)}"
+    return profile, first_name, last_name, gender, company, formatted_date, phone, sss_number
