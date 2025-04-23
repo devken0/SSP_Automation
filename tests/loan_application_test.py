@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from config.locators import locators
 from config.locators import branches
+from config.locators import application_types
 from config.settings import BASE_URL
 
 logging.basicConfig(filename="../logs/test_logs.log", level=logging.INFO)
@@ -13,19 +14,40 @@ logging.basicConfig(filename="../logs/test_logs.log", level=logging.INFO)
 fake_email = input("\nPlease enter your email: ")
 
 def test_loan_application(browser, fake_user):
-    fake_profile, fake_fname, fake_lname, fake_gender, fake_company, fake_dob, fake_phone, fake_sss = fake_user
-    logging.info("Starting test...")
-    driver, wait = browser # Unpack returned values
+    # Unpack returned values
+    fake_profile, fake_fname, fake_lname, fake_gender, fake_company, fake_dob, fake_phone, fake_sss, fake_branchChoice, fake_application_type, fake_salutation = fake_user
+    driver, wait = browser
 
     driver.get(BASE_URL)
 
+    #logging.info("Starting test...")
+
+    start_application(driver, wait, fake_branchChoice)
+
+    get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_dob, fake_sss, fake_email, fake_phone) 
+
+    submit_sblaf_form(driver, wait, fake_application_type)
+
+    '''
+    try:
+        assert 1 == 1
+        logging.info("Test passed!")
+        print("Test passed!")
+    except AssertionError:
+        logging.error("Test failed!")
+        print("Test failed!")
+    '''
+
+    input("\nPress Enter to close the browser")
+
+def start_application(driver, wait, fake_branchChoice):
     startApplicationBtn = wait.until(EC.presence_of_element_located((By.XPATH, locators["startApplicationBtn"])))
     startApplicationBtn.click()
 
     branchList = wait.until(EC.presence_of_element_located((By.XPATH, locators["branchList"])))
     branchList.click()
 
-    branchChoice = wait.until(EC.presence_of_element_located((By.XPATH, branches["CEBU BUSINESS PARK"])))
+    branchChoice = wait.until(EC.presence_of_element_located((By.XPATH, branches[f"{fake_branchChoice}"])))
 
     driver.execute_script("arguments[0].scrollIntoView(true);", branchChoice)
     time.sleep(1)
@@ -48,6 +70,7 @@ def test_loan_application(browser, fake_user):
 
     driver.execute_script("displayForm(6, 'NEXT');")
 
+def get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_dob, fake_sss, fake_email, fake_phone): 
     firstNameField = wait.until(EC.presence_of_element_located((By.ID, locators["firstNameField"])))
     firstNameField.send_keys(fake_fname)
 
@@ -89,13 +112,11 @@ def test_loan_application(browser, fake_user):
 
     driver.execute_script("goManualForm();")
 
-    input("\nPress Enter to close the browser")
-    '''
-    try:
-        assert 1 == 1
-        logging.info("Test passed!")
-        print("Test passed!")
-    except AssertionError:
-        logging.error("Test failed!")
-        print("Test failed!")
-    '''
+def submit_sblaf_form(driver, wait, application_type):
+    wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="legend_UDFBlock_SSP_CUST_CUSTOMER_TYPES"]')))
+    applicationType = driver.find_element(By.ID, application_types[f"{application_type}"]) 
+    applicationType.click()
+   
+    dropdown = driver.find_element(By.XPATH, locators["salutationList"])
+    select = Select(dropdown)
+    select.select_by_visible_text(fake_salutation)
