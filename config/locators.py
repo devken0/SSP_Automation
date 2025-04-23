@@ -14,11 +14,18 @@ locators = {
         "sexList":'//*[@id="mdcCustomerSex"]/div[1]',
         "sexChoice":'[data-value="M"]',
         "mobileNoField":'mobileNumber',
-        "emailField":'email'
+        "emailField":'email',
+        "salutationList":'//*[@id="UDF_SSP_CUST_INDIVIDUAL_GENERAL_PROFILE_SSP_CUST_INDIVIDUAL_SALUTATION"]',
+        "civilStatusList":'//*[@id="UDF_SSP_CUST_INDIVIDUAL_GENERAL_PROFILE_SSP_CUST_INDIVIDUAL_CIVIL_STATUS"]',
+        "pobProvinceList":'//*[@id="UDF_SSP_CUST_INDIVIDUAL_GENERAL_PROFILE_SSP_CUST_INDIVIDUAL_POB_PROVINCE"]',
 }
 
 branches = {
         "CEBU BUSINESS PARK":'//*[@id="branchList"]/li[152]',
         "GREENHILLS-ORTIGAS AVE.":'//*[@id="branchList"]/li[245]',
         "HEAD OFFICE CENTER":'//*[@id="branchList"]/li[246]'
+}
+
+application_types = {
+        "New Application":'UDF_SSP_CUST_CUSTOMER_TYPES_SSP_CUST_APPLICATION_TYPE_NEW'
 }
