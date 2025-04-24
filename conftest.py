@@ -20,8 +20,9 @@ def browser():
 
     driver = webdriver.Chrome(service=service, options=options)
     wait = WebDriverWait(driver, WAIT_DURATION)
+    longwait = WebDriverWait(driver, 1000)
 
-    yield driver, wait # Returns both driver and wait
+    yield driver, wait, longwait # Returns both driver and wait
 
     driver.quit()
 
@@ -35,7 +36,7 @@ def fake_user():
     company = profile["company"]
     phone = "09763853530"
     sss_number = f"{faker.random_int(10, 99)}-{faker.random_int(1000000, 9999999)}-{faker.random_int(0, 9)}"
-    branch = "CEBU BUSINESS PARK"
+    branch = "GREENHILLS-ORTIGAS AVE."
     application_type = "New Application"
     salutation = "Mister" if gender == "M" else "Miss"
     civil_status = "SINGLE"

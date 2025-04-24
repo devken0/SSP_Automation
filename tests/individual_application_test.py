@@ -12,11 +12,12 @@ from config.settings import BASE_URL
 logging.basicConfig(filename="../logs/test_logs.log", level=logging.INFO)
 
 fake_email = input("\nPlease enter your email: ")
+fake_tin = input("TIN: ")
 
 def test_loan_application(browser, fake_user):
     # Unpack returned values
     fake_profile, fake_fname, fake_lname, fake_gender, fake_company, fake_dob, fake_phone, fake_sss, fake_branchChoice, fake_application_type, fake_salutation = fake_user
-    driver, wait = browser
+    driver, wait, longwait = browser
 
     driver.get(BASE_URL)
 
@@ -26,7 +27,11 @@ def test_loan_application(browser, fake_user):
 
     get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_dob, fake_sss, fake_email, fake_phone) 
 
-    submit_sblaf_form(driver, wait, fake_application_type)
+    input("Press enter to close..")
+    
+    submit_sblaf_form(driver, wait, longwait, fake_application_type, fake_salutation, fake_company, fake_tin)
+    
+    #submit_application()
 
     '''
     try:
@@ -38,7 +43,6 @@ def test_loan_application(browser, fake_user):
         print("Test failed!")
     '''
 
-    input("\nPress Enter to close the browser")
 
 def start_application(driver, wait, fake_branchChoice):
     startApplicationBtn = wait.until(EC.presence_of_element_located((By.XPATH, locators["startApplicationBtn"])))
@@ -46,11 +50,12 @@ def start_application(driver, wait, fake_branchChoice):
 
     branchList = wait.until(EC.presence_of_element_located((By.XPATH, locators["branchList"])))
     branchList.click()
+    time.sleep(1)
 
     branchChoice = wait.until(EC.presence_of_element_located((By.XPATH, branches[f"{fake_branchChoice}"])))
+    time.sleep(1)
 
     driver.execute_script("arguments[0].scrollIntoView(true);", branchChoice)
-    time.sleep(1)
     branchChoice.click()
 
     driver.execute_script("displayForm(5, 'NEXT');")
@@ -79,11 +84,10 @@ def get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_
 
     idTypeList = wait.until(EC.presence_of_element_located((By.XPATH, locators["idTypeList"])))
     idTypeList.click()
-
+    
     idTypeChoice = wait.until(EC.presence_of_element_located((By.XPATH, locators["idTypeChoice"])))
     driver.execute_script("arguments[0].scrollIntoView(true);", idTypeChoice)
     idTypeChoice.click()
-    time.sleep(1)
 
     idNumberField = driver.find_element(By.XPATH, locators["idNumberField"])
     idNumberField.send_keys(fake_sss)
@@ -112,11 +116,21 @@ def get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_
 
     driver.execute_script("goManualForm();")
 
-def submit_sblaf_form(driver, wait, application_type):
-    wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="legend_UDFBlock_SSP_CUST_CUSTOMER_TYPES"]')))
-    applicationType = driver.find_element(By.ID, application_types[f"{application_type}"]) 
+def submit_sblaf_form(driver, wait, longwait, application_type, salutation, company, tin):
+    time.sleep(30)
+    print(application_types[f"{application_type}"])
+    
+    applicationType = driver.find_element(By.ID, application_types[f"{application_type}"])
     applicationType.click()
+    
+    #applicationType = longwait.until(EC.presence_of_element_located((By.XPATH, application_types[f"{application_type}"])))
+    
+    tinField = wait.until(EC.presence_of_element_located((By.XPATH, locators["tinField"])))
+    driver.execute_script("arguments[0].scrollIntoView(true);", tinField)
+    time.sleep(1)
+    tinField.send_keys(tin)
    
-    dropdown = driver.find_element(By.XPATH, locators["salutationList"])
-    select = Select(dropdown)
-    select.select_by_visible_text(fake_salutation)
+    #dropdown = driver.find_element(By.XPATH, locators["salutationList"])
+    #select = Select(dropdown)
+    #select.select_by_visible_text(salutation)
+    

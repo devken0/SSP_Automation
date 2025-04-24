@@ -15,9 +15,11 @@ locators = {
         "sexChoice":'[data-value="M"]',
         "mobileNoField":'mobileNumber',
         "emailField":'email',
+        "otpField":'/html/body/div/h3',
         "salutationList":'//*[@id="UDF_SSP_CUST_INDIVIDUAL_GENERAL_PROFILE_SSP_CUST_INDIVIDUAL_SALUTATION"]',
         "civilStatusList":'//*[@id="UDF_SSP_CUST_INDIVIDUAL_GENERAL_PROFILE_SSP_CUST_INDIVIDUAL_CIVIL_STATUS"]',
         "pobProvinceList":'//*[@id="UDF_SSP_CUST_INDIVIDUAL_GENERAL_PROFILE_SSP_CUST_INDIVIDUAL_POB_PROVINCE"]',
+        "tinField":'//*[@id="UDF_SSP_CUST_INDIVIDUAL_GENERAL_PROFILE_SSP_CUST_INDIVIDUAL_TIN"]'
 }
 
 branches = {
@@ -27,5 +29,5 @@ branches = {
 }
 
 application_types = {
-        "New Application":'UDF_SSP_CUST_CUSTOMER_TYPES_SSP_CUST_APPLICATION_TYPE_NEW'
+        "New Application": 'UDF_SSP_CUST_CUSTOMER_TYPES_SSP_CUST_APPLICATION_TYPE_NEW'
 }
