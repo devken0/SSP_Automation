@@ -36,9 +36,35 @@ def fake_user():
     company = profile["company"]
     phone = "09763853530"
     sss_number = f"{faker.random_int(10, 99)}-{faker.random_int(1000000, 9999999)}-{faker.random_int(0, 9)}"
-    branch = "GREENHILLS-ORTIGAS AVE."
+    branch = "ANTIQUE-T.A. FORNIER"
     application_type = "New Application"
     salutation = "Mister" if gender == "M" else "Miss"
     civil_status = "SINGLE"
-    return profile, first_name, last_name, gender, company, formatted_birthdate, phone, sss_number, branch, application_type, civil_status
+    province = "METRO MANILA"
+    city = "PASAY CITY"
+    years_in_operation = ""
+    website = ""
+    nature_of_business = ""
+    business_reg_type = ""
+    date_of_registration = ""
+    date_of_expiry = ""
+    business_reg_number = ""
+    firm_size = ""
+    loan_amount = ""
+    tenor = ""
+    payment_freq = ""
+    loan_facility = ""
+    loan_type = ""
+    
+    return (
+        profile, first_name, last_name, gender, company, formatted_birthdate,
+        phone, sss_number, branch, application_type, salutation,
+        civil_status, province, city, years_in_operation, website,
+        nature_of_business, business_reg_type, date_of_registration,
+        date_of_expiry, business_reg_number, firm_size, loan_amount,
+        tenor, payment_freq, loan_facility, loan_type
+        )
+
+
+
 
