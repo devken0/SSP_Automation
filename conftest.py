@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from config.settings import CHROMEDRIVER_PATH, CHROMIUM_PATH, WAIT_DURATION
 
 faker = Faker("en_PH")
+fake_user_gender = ""
 
 @pytest.fixture
 def browser():
@@ -30,7 +31,8 @@ def browser():
 def fake_user():
     profile = faker.profile()
     first_name, last_name = profile["name"].split(" ", 1) 
-    gender = profile["sex"] 
+    gender = profile["sex"]
+    fake_user_gender = gender
     birthdate = faker.date_of_birth()
     formatted_birthdate = birthdate.strftime("%m/%d/%Y")
     company = profile["company"]
@@ -39,7 +41,7 @@ def fake_user():
     branch = "ANTIQUE-T.A. FORNIER"
     application_type = "New Application"
     salutation = "Mister" if gender == "M" else "Miss"
-    civil_status = "SINGLE"
+    civil_status = "MARRIED"
     province = "METRO MANILA"
     city = "PASAY CITY"
     years_in_operation = ""
@@ -65,6 +67,30 @@ def fake_user():
         tenor, payment_freq, loan_facility, loan_type
         )
 
+@pytest.fixture
+def fake_mother():
+    first_name = faker.first_name_female()
+    last_name = faker.last_name_female()
+    
+    return (
+        first_name, last_name
+        )
+
+@pytest.fixture
+def fake_spouse():
+    gender = fake_user_gender
+    first_name = faker.first_name_female() if gender == 'M' else faker.first_name_male()
+    last_name = faker.last_name_female() if gender == 'M' else faker.last_name_male()
+    birthdate = faker.date_of_birth()
+    formatted_birthdate = birthdate.strftime("%m/%d/%Y")
+    email = faker.email()
+    
+    return (
+        first_name, last_name, formatted_birthdate, email
+        )
+
+
+    
 
 
 
