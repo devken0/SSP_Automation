@@ -3,6 +3,7 @@ import os
 import logging
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 from config.locators import locators
 from config.locators import branches
@@ -10,13 +11,23 @@ from config.locators import application_types
 from config.settings import BASE_URL
 
 logging.basicConfig(filename="../logs/test_logs.log", level=logging.INFO)
-
 fake_email = input("\nPlease enter your email: ")
 fake_tin = input("TIN: ")
 
 def test_loan_application(browser, fake_user):
     # Unpack returned values
-    fake_profile, fake_fname, fake_lname, fake_gender, fake_company, fake_dob, fake_phone, fake_sss, fake_branchChoice, fake_application_type, fake_salutation = fake_user
+    '''
+    profile, first_name, last_name, gender, company, formatted_birthdate,
+    phone, sss_number, branch, application_type, salutation,
+    civil_status, province, city, years_in_operation, website,
+    nature_of_business, business_reg_type, date_of_registration,
+    date_of_expiry, business_reg_number, firm_size, loan_amount,
+    tenor, payment_freq, loan_facility, loan_type
+    '''
+    (fake_profile, fake_fname, fake_lname, fake_gender, fake_company, fake_dob, fake_phone, fake_sss, fake_branchChoice,
+     fake_application_type, fake_salutation,fake_civilStatus, fake_province, fake_city, fake_yrsInOps, fake_website,
+     fake_nob, fake_regType, fake_dateOfReg, fake_dateOfExp, fake_regNum, fake_firmSize, fake_loanAmount,
+     fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType) = fake_user
     driver, wait, longwait = browser
 
     driver.get(BASE_URL)
@@ -27,9 +38,13 @@ def test_loan_application(browser, fake_user):
 
     get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_dob, fake_sss, fake_email, fake_phone) 
 
-    input("Press enter to close..")
+    input("\nPress Enter to continue")
     
-    submit_sblaf_form(driver, wait, longwait, fake_application_type, fake_salutation, fake_company, fake_tin)
+    submit_sblaf_form(
+        driver, wait, longwait, fake_application_type, fake_salutation, fake_company, fake_tin, fake_civilStatus, fake_province, fake_city,
+        fake_yrsInOps, fake_website, fake_nob, fake_regType, fake_dateOfReg, fake_dateOfExp, fake_regNum, fake_firmSize, fake_loanAmount,
+        fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType
+        )
     
     #submit_application()
 
@@ -43,39 +58,50 @@ def test_loan_application(browser, fake_user):
         print("Test failed!")
     '''
 
+def click_element(driver, by, elementType, wait=False, scrollIntoView=False, branch=False):
+    if wait != False:
+        try:
+            element = wait.until(EC.presence_of_element_located((by, elementType)))
+            
+            if scrollIntoView:
+                driver.execute_script("arguments[0].scrollIntoView(true);", element)
 
-def start_application(driver, wait, fake_branchChoice):
-    startApplicationBtn = wait.until(EC.presence_of_element_located((By.XPATH, locators["startApplicationBtn"])))
-    startApplicationBtn.click()
+            element.click()
+            return 
+        except Exception as e:
+            print(f"Error clicking element: {e}")
+            return
+    try:
+        element = driver.find_element(by, elementType)
+        if scrollIntoView:
+            driver.execute_script("arguments[0].scrollIntoView(true);", element)
+        element.click()
+    except Exception as e:
+        print(f"Error clicking element: {e}")
+        
+def send_keys_to_element(wait, by, elementType, keys):
+    try:
+        element = wait.until(EC.presence_of_element_located((by, elementType)))
 
-    branchList = wait.until(EC.presence_of_element_located((By.XPATH, locators["branchList"])))
-    branchList.click()
+        element.send_keys(keys)
+    except Exception as e:
+        print(f"Error clicking element: {e}")
+    
+def start_application(driver, wait, fake_branchChoice):  
+    click_element(driver, By.XPATH, locators["startApplicationBtn"], wait=wait)
+    click_element(driver, By.XPATH, locators["branchList"], wait=wait)
     time.sleep(1)
-
-    branchChoice = wait.until(EC.presence_of_element_located((By.XPATH, branches[f"{fake_branchChoice}"])))
-    time.sleep(1)
-
-    driver.execute_script("arguments[0].scrollIntoView(true);", branchChoice)
-    branchChoice.click()
-
+    click_element(driver, By.XPATH, branches[f"{fake_branchChoice}"], wait=wait, scrollIntoView=True, branch=fake_branchChoice)
     driver.execute_script("displayForm(5, 'NEXT');")
-
-    creditProgramChoice = wait.until(EC.presence_of_element_located((By.ID, locators["creditProgramChoice"])))
-    creditProgramChoice.click()
-
+    click_element(driver, By.ID, locators["creditProgramChoice"], wait=wait)
     driver.execute_script("displayForm(2, 'NEXT');")
-
-    customerTypeChoice = wait.until(EC.presence_of_element_located((By.ID, locators["customerTypeChoice"])))
-    customerTypeChoice.click()
-
+    click_element(driver, By.ID, locators["customerTypeChoice"], wait=wait)
     driver.execute_script("displayForm(3, 'NEXT');")
-
-    consentCheckboxChoice = wait.until(EC.presence_of_element_located((By.ID, locators["consentCheckboxChoice"])))
-    consentCheckboxChoice.click()
-
+    click_element(driver, By.ID, locators["consentCheckboxChoice"], wait=wait)
     driver.execute_script("displayForm(6, 'NEXT');")
 
-def get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_dob, fake_sss, fake_email, fake_phone): 
+def get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_dob, fake_sss, fake_email, fake_phone):
+    #send_keys_to_element(driver, wait, fake_fname, fake_lname, fake_gender, fake_dob, fake_sss, fake_email, fake_phone)
     firstNameField = wait.until(EC.presence_of_element_located((By.ID, locators["firstNameField"])))
     firstNameField.send_keys(fake_fname)
 
@@ -116,21 +142,61 @@ def get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_
 
     driver.execute_script("goManualForm();")
 
-def submit_sblaf_form(driver, wait, longwait, application_type, salutation, company, tin):
-    time.sleep(30)
-    print(application_types[f"{application_type}"])
+    '''
+    profile, first_name, last_name, gender, company, formatted_birthdate,
+    phone, sss_number, branch, application_type, salutation,
+    civil_status, province, city, years_in_operation, website,
+    nature_of_business, business_reg_type, date_of_registration,
+    date_of_expiry, business_reg_number, firm_size, loan_amount,
+    tenor, payment_freq, loan_facility, loan_type
+    '''
     
-    applicationType = driver.find_element(By.ID, application_types[f"{application_type}"])
+def submit_sblaf_form(
+    driver, wait, longwait, application_type, salutation, company, tin, civilStatus, province, city,
+    years_in_operation, website, nature_of_business, business_reg_type, date_of_registration,
+    date_of_expiry, business_reg_number, firm_size, loan_amount, tenor, payment_freq,
+    loan_facility, loan_type
+    ):
+    
+    iframe = longwait.until(EC.presence_of_element_located((By.ID, "productDetailsFrame")))
+    driver.switch_to.frame(iframe)
+    
+    applicationType = driver.find_element(By.XPATH, application_types[f"{application_type}"])
     applicationType.click()
+
+    salutationList = driver.find_element(By.XPATH, locators["salutationList"])
+    select = Select(salutationList)
+    select.select_by_visible_text(salutation)
     
-    #applicationType = longwait.until(EC.presence_of_element_located((By.XPATH, application_types[f"{application_type}"])))
+    civilStatusList = driver.find_element(By.XPATH, locators["civilStatusList"])
+    select = Select(civilStatusList)
+    select.select_by_visible_text(civilStatus)
+    
+    pobProvinceList = driver.find_element(By.XPATH, locators["pobProvinceList"])
+    select = Select(pobProvinceList)
+    select.select_by_visible_text(province)
+    
+    pobCityList = driver.find_element(By.XPATH, locators["pobCityList"])
+    select = Select(pobCityList)
+    select.select_by_visible_text(city)
     
     tinField = wait.until(EC.presence_of_element_located((By.XPATH, locators["tinField"])))
-    driver.execute_script("arguments[0].scrollIntoView(true);", tinField)
-    time.sleep(1)
-    tinField.send_keys(tin)
-   
-    #dropdown = driver.find_element(By.XPATH, locators["salutationList"])
-    #select = Select(dropdown)
-    #select.select_by_visible_text(salutation)
     
+    driver.execute_script("arguments[0].scrollIntoView(true);", tinField)
+    #time.sleep(1)
+    tinField.send_keys(tin)
+    
+    input("Press Enter to continue")
+    
+    driver.switch_to.default_content() # switch back to the main page once done
+    
+    #upload_sblaf_docs()
+    
+    #submit()
+    
+def upload_sblaf_docs():
+    input("Press Enter to continue")
+ 
+    
+
+
