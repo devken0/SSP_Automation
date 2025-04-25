@@ -14,7 +14,7 @@ logging.basicConfig(filename="../logs/test_logs.log", level=logging.INFO)
 fake_email = input("\nPlease enter your email: ")
 fake_tin = input("TIN: ")
 
-def test_loan_application(browser, fake_user):
+def test_loan_application(browser, fake_user, fake_spouse, fake_mother):
     # Unpack returned values
     '''
     profile, first_name, last_name, gender, company, formatted_birthdate,
@@ -28,6 +28,8 @@ def test_loan_application(browser, fake_user):
      fake_application_type, fake_salutation,fake_civilStatus, fake_province, fake_city, fake_yrsInOps, fake_website,
      fake_nob, fake_regType, fake_dateOfReg, fake_dateOfExp, fake_regNum, fake_firmSize, fake_loanAmount,
      fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType) = fake_user
+    (fake_spouse_fname, fake_spouse_lname, fake_spouse_dob, fake_spouse_email) = fake_spouse
+    (fake_mother_fname, fake_mother_lname) = fake_mother
     driver, wait, longwait = browser
 
     driver.get(BASE_URL)
@@ -43,7 +45,8 @@ def test_loan_application(browser, fake_user):
     submit_sblaf_form(
         driver, wait, longwait, fake_application_type, fake_salutation, fake_company, fake_tin, fake_civilStatus, fake_province, fake_city,
         fake_yrsInOps, fake_website, fake_nob, fake_regType, fake_dateOfReg, fake_dateOfExp, fake_regNum, fake_firmSize, fake_loanAmount,
-        fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType
+        fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType, fake_spouse_fname, fake_spouse_lname, fake_spouse_dob, fake_spouse_email,
+        fake_mother_fname, fake_mother_lname
         )
     
     #submit_application()
@@ -79,13 +82,24 @@ def click_element(driver, by, elementType, wait=False, scrollIntoView=False, bra
     except Exception as e:
         print(f"Error clicking element: {e}")
         
-def send_keys_to_element(wait, by, elementType, keys):
+def send_keys_to_element(driver, by, elementType, keys, wait=False, scrollIntoView=False):
+    if wait != False:
+        try:
+            element = wait.until(EC.presence_of_element_located((by, elementType)))
+            if scrollIntoView:
+                driver.execute_script("arguments[0].scrollIntoView(true);", element)
+            element.send_keys(keys)
+            return
+        except Exception as e:
+            print(f"Error sending keys to element: {e}")
+            return
     try:
-        element = wait.until(EC.presence_of_element_located((by, elementType)))
-
+        element = driver.find_element(by, elementType)
+        if scrollIntoView:
+            driver.execute_script("arguments[0].scrollIntoView(true);", element)
         element.send_keys(keys)
     except Exception as e:
-        print(f"Error clicking element: {e}")
+        print(f"Error sending keys to element: {e}")
     
 def start_application(driver, wait, fake_branchChoice):  
     click_element(driver, By.XPATH, locators["startApplicationBtn"], wait=wait)
@@ -155,7 +169,8 @@ def submit_sblaf_form(
     driver, wait, longwait, application_type, salutation, company, tin, civilStatus, province, city,
     years_in_operation, website, nature_of_business, business_reg_type, date_of_registration,
     date_of_expiry, business_reg_number, firm_size, loan_amount, tenor, payment_freq,
-    loan_facility, loan_type
+    loan_facility, loan_type, spouse_fname, spouse_lname, spouse_dob, spouse_email,
+    mother_fname, mother_lname
     ):
     
     iframe = longwait.until(EC.presence_of_element_located((By.ID, "productDetailsFrame")))
@@ -186,7 +201,19 @@ def submit_sblaf_form(
     #time.sleep(1)
     tinField.send_keys(tin)
     
+    send_keys_to_element(driver, By.XPATH, locators["spouseFirstNameField"], spouse_fname, scrollIntoView=True)
+    send_keys_to_element(driver, By.XPATH, locators["spouseLastNameField"], spouse_lname)
+    send_keys_to_element(driver, By.XPATH, locators["spouseDob"], spouse_dob)
+    send_keys_to_element(driver, By.XPATH, locators["spouseEmail"], spouse_email)
+    
+    send_keys_to_element(driver, By.XPATH, locators["motherFirstNameField"], mother_fname, scrollIntoView=True)
+    send_keys_to_element(driver, By.XPATH, locators["motherLastNameField"], spouse_lname)
+
+
+    
     input("Press Enter to continue")
+    
+    send_keys_to_element(driver, By.XPATH, locators["spouseEmail"], fake_)
     
     driver.switch_to.default_content() # switch back to the main page once done
     
@@ -196,7 +223,6 @@ def submit_sblaf_form(
     
 def upload_sblaf_docs():
     input("Press Enter to continue")
- 
     
 
 
