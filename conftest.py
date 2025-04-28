@@ -28,7 +28,7 @@ def browser():
     driver.quit()
 
 @pytest.fixture
-def fake_user():
+def generate_fake_user():
     profile = faker.profile()
     first_name, last_name = profile["name"].split(" ", 1) 
     gender = profile["sex"]
@@ -68,7 +68,7 @@ def fake_user():
         )
 
 @pytest.fixture
-def fake_mother():
+def generate_fake_mother():
     first_name = faker.first_name_female()
     last_name = faker.last_name_female()
     
@@ -77,7 +77,7 @@ def fake_mother():
         )
 
 @pytest.fixture
-def fake_spouse():
+def generate_fake_spouse():
     gender = fake_user_gender
     first_name = faker.first_name_female() if gender == 'M' else faker.first_name_male()
     last_name = faker.last_name_female() if gender == 'M' else faker.last_name_male()

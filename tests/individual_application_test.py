@@ -14,7 +14,7 @@ logging.basicConfig(filename="../logs/test_logs.log", level=logging.INFO)
 fake_email = input("\nPlease enter your email: ")
 fake_tin = input("TIN: ")
 
-def test_loan_application(browser, fake_user, fake_spouse, fake_mother):
+def test_loan_application(browser, generate_fake_user, generate_fake_spouse, generate_fake_mother):
     # Unpack returned values
     '''
     profile, first_name, last_name, gender, company, formatted_birthdate,
@@ -27,9 +27,9 @@ def test_loan_application(browser, fake_user, fake_spouse, fake_mother):
     (fake_profile, fake_fname, fake_lname, fake_gender, fake_company, fake_dob, fake_phone, fake_sss, fake_branchChoice,
      fake_application_type, fake_salutation,fake_civilStatus, fake_province, fake_city, fake_yrsInOps, fake_website,
      fake_nob, fake_regType, fake_dateOfReg, fake_dateOfExp, fake_regNum, fake_firmSize, fake_loanAmount,
-     fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType) = fake_user
-    (fake_spouse_fname, fake_spouse_lname, fake_spouse_dob, fake_spouse_email) = fake_spouse
-    (fake_mother_fname, fake_mother_lname) = fake_mother
+     fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType) = generate_fake_user
+    (fake_spouse_fname, fake_spouse_lname, fake_spouse_dob, fake_spouse_email) = generate_fake_spouse
+    (fake_mother_fname, fake_mother_lname) = generate_fake_mother
     driver, wait, longwait = browser
 
     driver.get(BASE_URL)
