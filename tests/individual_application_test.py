@@ -8,13 +8,14 @@ from selenium.webdriver.common.keys import Keys
 from config.locators import locators
 from config.locators import branches
 from config.locators import application_types
+from config.locators import iframes
 from config.settings import BASE_URL
 
 logging.basicConfig(filename="../logs/test_logs.log", level=logging.INFO)
 fake_email = input("\nPlease enter your email: ")
 fake_tin = input("TIN: ")
 
-def test_loan_application(browser, generate_fake_user, generate_fake_spouse, generate_fake_mother):
+def test_loan_application(browser, generate_fake_user, generate_fake_spouse, generate_fake_mother, generate_fake_file):
     # Unpack returned values
     '''
     profile, first_name, last_name, gender, company, formatted_birthdate,
@@ -26,10 +27,11 @@ def test_loan_application(browser, generate_fake_user, generate_fake_spouse, gen
     '''
     (fake_profile, fake_fname, fake_lname, fake_gender, fake_company, fake_dob, fake_phone, fake_sss, fake_branchChoice,
      fake_application_type, fake_salutation,fake_civilStatus, fake_province, fake_city, fake_yrsInOps, fake_website,
-     fake_nob, fake_regType, fake_dateOfReg, fake_dateOfExp, fake_regNum, fake_firmSize, fake_loanAmount,
+     fake_nob, fake_specific_business, fake_business_addr_ownership, fake_regType, fake_regTypeOthers, fake_dateOfReg, fake_dateOfExp, fake_regNum, fake_firmSize, fake_loanAmount,
      fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType) = generate_fake_user
     (fake_spouse_fname, fake_spouse_lname, fake_spouse_dob, fake_spouse_email) = generate_fake_spouse
     (fake_mother_fname, fake_mother_lname) = generate_fake_mother
+    fake_attachment_name, fake_file_name = generate_fake_file
     driver, wait, longwait = browser
 
     driver.get(BASE_URL)
@@ -38,15 +40,13 @@ def test_loan_application(browser, generate_fake_user, generate_fake_spouse, gen
 
     start_application(driver, wait, fake_branchChoice)
 
-    get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_dob, fake_sss, fake_email, fake_phone) 
-
-    input("\nPress Enter to continue")
+    get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_dob, fake_sss, fake_email, fake_phone)
     
     submit_sblaf_form(
         driver, wait, longwait, fake_application_type, fake_salutation, fake_company, fake_tin, fake_civilStatus, fake_province, fake_city,
-        fake_yrsInOps, fake_website, fake_nob, fake_regType, fake_dateOfReg, fake_dateOfExp, fake_regNum, fake_firmSize, fake_loanAmount,
+        fake_yrsInOps, fake_website, fake_nob, fake_specific_business, fake_business_addr_ownership, fake_regType, fake_regTypeOthers, fake_dateOfReg, fake_dateOfExp, fake_regNum, fake_firmSize, fake_loanAmount,
         fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType, fake_spouse_fname, fake_spouse_lname, fake_spouse_dob, fake_spouse_email,
-        fake_mother_fname, fake_mother_lname
+        fake_mother_fname, fake_mother_lname, fake_attachment_name, fake_file_name
         )
     
     #submit_application()
@@ -65,10 +65,7 @@ def click_element(driver, by, elementType, wait=False, scrollIntoView=False, bra
     if wait != False:
         try:
             element = wait.until(EC.presence_of_element_located((by, elementType)))
-            
-            if scrollIntoView:
-                driver.execute_script("arguments[0].scrollIntoView(true);", element)
-
+            if scrollIntoView: scroll_into_view(driver, element)
             element.click()
             return 
         except Exception as e:
@@ -76,8 +73,7 @@ def click_element(driver, by, elementType, wait=False, scrollIntoView=False, bra
             return
     try:
         element = driver.find_element(by, elementType)
-        if scrollIntoView:
-            driver.execute_script("arguments[0].scrollIntoView(true);", element)
+        if scrollIntoView: scroll_into_view(driver, element)
         element.click()
     except Exception as e:
         print(f"Error clicking element: {e}")
@@ -86,8 +82,7 @@ def send_keys_to_element(driver, by, elementType, keys, wait=False, scrollIntoVi
     if wait != False:
         try:
             element = wait.until(EC.presence_of_element_located((by, elementType)))
-            if scrollIntoView:
-                driver.execute_script("arguments[0].scrollIntoView(true);", element)
+            if scrollIntoView: scroll_into_view(driver, element)
             element.send_keys(keys)
             return
         except Exception as e:
@@ -95,12 +90,52 @@ def send_keys_to_element(driver, by, elementType, keys, wait=False, scrollIntoVi
             return
     try:
         element = driver.find_element(by, elementType)
-        if scrollIntoView:
-            driver.execute_script("arguments[0].scrollIntoView(true);", element)
+        if scrollIntoView: scroll_into_view(driver, element)
         element.send_keys(keys)
     except Exception as e:
         print(f"Error sending keys to element: {e}")
-    
+
+def select_element(driver, by, elementType, selectText, wait=False, scrollIntoView=False):
+    if wait != False:
+        try:
+            element = wait.until(EC.presence_of_element_located((by, elementType)))
+            if scrollIntoView: scroll_into_view(driver, element)
+            select = Select(element)
+            select.select_by_visible_text(selectText)
+            return
+        except Exception as e:
+            print(f"Error sending keys to element: {e}")
+            return
+    try:
+        element = driver.find_element(by, elementType)
+        if scrollIntoView: scroll_into_view(driver, element)
+        select = Select(element)
+        select.select_by_visible_text(selectText)
+    except Exception as e:
+        print(f"Error sending keys to element: {e}")
+
+def switch_to_iframe(driver, by, elementType, wait=False, scrollIntoView=False):
+    if wait != False:
+        try:
+            element = wait.until(EC.presence_of_element_located((by, elementType)))
+            if scrollIntoView: scroll_into_view(driver, element)
+            driver.switch_to.frame(element)
+            return
+        except Exception as e:
+            print(f"Error sending keys to element: {e}")
+            return
+    try:
+        element = driver.find_element(by, elementType)
+        if scrollIntoView: scroll_into_view(driver, element)
+        driver.switch_to.frame(element)
+    except Exception as e:
+        print(f"Error sending keys to element: {e}")
+        
+def scroll_into_view(driver, element=False, by=False, elementType=False):
+    if not element:
+        element = driver.find_element(by, elementType)
+    driver.execute_script("arguments[0].scrollIntoView(true);", element)
+
 def start_application(driver, wait, fake_branchChoice):  
     click_element(driver, By.XPATH, locators["startApplicationBtn"], wait=wait)
     click_element(driver, By.XPATH, locators["branchList"], wait=wait)
@@ -167,60 +202,117 @@ def get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_
     
 def submit_sblaf_form(
     driver, wait, longwait, application_type, salutation, company, tin, civilStatus, province, city,
-    years_in_operation, website, nature_of_business, business_reg_type, date_of_registration,
+    years_in_operation, website, nature_of_business, specific_business, business_addr_ownership,
+    business_reg_type, business_reg_type_others, date_of_registration,
     date_of_expiry, business_reg_number, firm_size, loan_amount, tenor, payment_freq,
     loan_facility, loan_type, spouse_fname, spouse_lname, spouse_dob, spouse_email,
-    mother_fname, mother_lname
+    mother_fname, mother_lname, attachment_name, file_name
     ):
     
-    iframe = longwait.until(EC.presence_of_element_located((By.ID, "productDetailsFrame")))
-    driver.switch_to.frame(iframe)
+    switch_to_iframe(driver, By.ID, iframes["sblaf_main_iframe"], wait=longwait)
     
-    applicationType = driver.find_element(By.XPATH, application_types[f"{application_type}"])
-    applicationType.click()
+    click_element(driver, By.XPATH, application_types[f"{application_type}"], wait=wait)
+    select_element(driver, By.XPATH, locators["salutationList"], salutation, wait=wait, scrollIntoView=True)
+    select_element(driver, By.XPATH, locators["civilStatusList"], civilStatus, wait=wait)
+    select_element(driver, By.XPATH, locators["pobProvinceList"], province, wait=wait)
+    select_element(driver, By.XPATH, locators["pobCityList"], city, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["tinField"], tin, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["spouseFirstNameField"], spouse_fname, wait=wait, scrollIntoView=True)
+    send_keys_to_element(driver, By.XPATH, locators["spouseLastNameField"], spouse_lname, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["spouseDob"], spouse_dob, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["spouseEmail"], spouse_email, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["motherFirstNameField"], mother_fname, wait=wait, scrollIntoView=True)
+    send_keys_to_element(driver, By.XPATH, locators["motherLastNameField"], spouse_lname, wait=wait)
+    select_element(driver, By.XPATH, locators["provinceList"], province, wait=wait, scrollIntoView=True)
+    select_element(driver, By.XPATH, locators["cityList"], city, wait=wait)
+    click_element(driver, By.XPATH, locators["homeOwnershipButton"], wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["businessNameField"], company, wait=wait, scrollIntoView=True)
+    send_keys_to_element(driver, By.XPATH, locators["yearBusinessField"], years_in_operation, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["socialMediaField"], website, wait=wait)
+    select_element(driver, By.XPATH, locators["natureBusinessList"], nature_of_business, wait=wait)
+    select_element(driver, By.XPATH, locators["specifyBusinessList"], specific_business, wait=wait)
+    click_element(driver, By.XPATH, locators["similarhomeAddressButton"], wait=wait, scrollIntoView=True)
+    select_element(driver, By.XPATH, locators["businessaddressOwnership"], business_addr_ownership, wait=wait)
+    select_element(driver, By.XPATH, locators["businessRegistrationList"], business_reg_type, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["businessRegistrationOthers"], business_reg_type_others, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["dateRegistrationField"], date_of_registration, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["expiryRegistrationField"], date_of_expiry, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["registrationNumberField"], business_reg_number, wait=wait)
+    click_element(driver, By.XPATH, locators["firmSizeButton"], wait=wait, scrollIntoView=True)
+    click_element(driver, By.XPATH, locators["repaymentofLoans"], wait=wait, scrollIntoView=True)
+    click_element(driver, By.XPATH, locators["addROLButton"], wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["loanAmountField"], loan_amount, wait=wait, scrollIntoView=True)
+    send_keys_to_element(driver, By.XPATH, locators["tenorField"], tenor, wait=wait)
+    select_element(driver, By.XPATH, locators["proposedRepaymentList"], payment_freq, wait=wait)
+    select_element(driver, By.XPATH, locators["loanFacilityList"], loan_facility, wait=wait)
+    click_element(driver, By.XPATH, locators["loanPurposeList"], wait=wait)
+    click_element(driver, By.XPATH, locators["addloanPurposeButton"], wait=wait)
+    click_element(driver, By.XPATH, locators["typeofLoanButton"], wait=wait)
+    
+    scroll_into_view(driver, by=By.XPATH, elementType=locators["documentChecklist"])
+    
+    
+    driver.execute_script("createAmlKyc('CTY000000253');")
+    
 
-    salutationList = driver.find_element(By.XPATH, locators["salutationList"])
-    select = Select(salutationList)
-    select.select_by_visible_text(salutation)
     
-    civilStatusList = driver.find_element(By.XPATH, locators["civilStatusList"])
-    select = Select(civilStatusList)
-    select.select_by_visible_text(civilStatus)
+    #driver.switch_to.default_content()
+    switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
     
-    pobProvinceList = driver.find_element(By.XPATH, locators["pobProvinceList"])
-    select = Select(pobProvinceList)
-    select.select_by_visible_text(province)
+    send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=longwait)
+    #send_keys_to_element(driver, By.XPATH, locators["fileUploadButton"], file_name, wait=wait)
+    #driver.execute_script("performAction('create_document_checklist_att');")
     
-    pobCityList = driver.find_element(By.XPATH, locators["pobCityList"])
-    select = Select(pobCityList)
-    select.select_by_visible_text(city)
-    
-    tinField = wait.until(EC.presence_of_element_located((By.XPATH, locators["tinField"])))
-    
-    driver.execute_script("arguments[0].scrollIntoView(true);", tinField)
-    #time.sleep(1)
-    tinField.send_keys(tin)
-    
-    send_keys_to_element(driver, By.XPATH, locators["spouseFirstNameField"], spouse_fname, scrollIntoView=True)
-    send_keys_to_element(driver, By.XPATH, locators["spouseLastNameField"], spouse_lname)
-    send_keys_to_element(driver, By.XPATH, locators["spouseDob"], spouse_dob)
-    send_keys_to_element(driver, By.XPATH, locators["spouseEmail"], spouse_email)
-    
-    send_keys_to_element(driver, By.XPATH, locators["motherFirstNameField"], mother_fname, scrollIntoView=True)
-    send_keys_to_element(driver, By.XPATH, locators["motherLastNameField"], spouse_lname)
+    '''
 
+    driver.execute_script("createAmlKyc('CTY000000255');")
+    switch_to_iframe(driver, By.ID, iframes["upload_document_iframe"], wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["attachmentNameField"], attachment_name, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["fileUploadButton"], file_name, wait=wait)
+    driver.execute_script("performAction('create_document_checklist_att')")
 
+    driver.execute_script("createAmlKyc('CTY000000257');")
+    switch_to_iframe(driver, By.ID, iframes["upload_document_iframe"], wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["attachmentNameField"], attachment_name, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["fileUploadButton"], file_name, wait=wait)
+    driver.execute_script("performAction('create_document_checklist_att')")
+
+    driver.execute_script("createAmlKyc('CTY000000015');")
+    switch_to_iframe(driver, By.ID, iframes["upload_document_iframe"], wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["attachmentNameField"], attachment_name, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["fileUploadButton"], file_name, wait=wait)
+    driver.execute_script("performAction('create_document_checklist_att')")
+    
+    driver.execute_script("createAmlKyc('CTY000000243');")
+    switch_to_iframe(driver, By.ID, iframes["upload_document_iframe"], wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["attachmentNameField"], attachment_name, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["fileUploadButton"], file_name, wait=wait)
+    driver.execute_script("performAction('create_document_checklist_att')")
+    
+    driver.execute_script("createAmlKyc('CTY000000256');")
+    switch_to_iframe(driver, By.ID, iframes["upload_document_iframe"], wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["attachmentNameField"], attachment_name, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["fileUploadButton"], file_name, wait=wait)
+    driver.execute_script("performAction('create_document_checklist_att')")
+    
+    switch_to_iframe(driver, By.ID, iframes["sblaf_main_iframe"], wait=longwait)
+    '''
     
     input("Press Enter to continue")
     
-    send_keys_to_element(driver, By.XPATH, locators["spouseEmail"], fake_)
+    #send_keys_to_element(driver, By.XPATH, locators["spouseEmail"], fake_)
     
-    driver.switch_to.default_content() # switch back to the main page once done
+    #driver.switch_to.default_content() # switch back to the main page once done
     
     #upload_sblaf_docs()
     
     #submit()
-    
+
+def login_form():
+    print(f"\n")
+    input("Press Enter to close...")
+
+
 def upload_sblaf_docs():
     input("Press Enter to continue")
     

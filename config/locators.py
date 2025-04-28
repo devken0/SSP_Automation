@@ -31,19 +31,20 @@ locators = {
         'motherLastNameField':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_MOTHER_MAIDEN_NAME_SSP_CUST_INDIVIDUAL_MDN_LAST_NAME"]',
         'provinceList':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_HOME_ADDRESS_SSP_CUST_INDIVIDUAL_RESIDENTIAL_ADDRESS_PROVINCE"]',
         'cityList':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_HOME_ADDRESS_SSP_CUST_INDIVIDUAL_RESIDENTIAL_ADDRESS_CITY"]',
-        'homeOwnershipButton':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_HOME_ADDRESS_SSP_CUST_INDIVIDUAL_RESIDENTIAL_ADDRESS_OWNERSHIP_2"]',
+        'homeOwnershipButton':'//*[@id="tbody_UDFBlock_SSP_CUST_INDIVIDUAL_HOME_ADDRESS"]/tr[5]/td[2]/span[2]/div/label',
         'businessNameField':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_BIZ_GENERAL_PROFILE_SSP_CUST_INDIVIDUAL_BIZ_BUSINESS_NAME"]',
         'yearBusinessField':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_BIZ_GENERAL_PROFILE_SSP_CUST_INDIVIDUAL_BIZ_OPERATION_YEARS"]',
         'socialMediaField':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_BIZ_GENERAL_PROFILE_SSP_CUST_INDIVIDUAL_BIZ_MEDIA"]',
         'natureBusinessList':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_BIZ_GENERAL_PROFILE_SSP_CUST_INDIVIDUAL_BIZ_NATURE_OF_BUSINESS"]',
         'specifyBusinessList':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_BIZ_GENERAL_PROFILE_SSP_CUST_INDIVIDUAL_BIZ_BUSINESS_ACTIVITIES"]',
-        'similarhomeAddressButton':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_BIZ_PRINCIPAL_BUSINESS_ADDRESS_SSP_CUST_INDIVIDUAL_BIZ_IS_HOME_ADDR_1"]',
+        'similarhomeAddressButton':'//*[@id="tbody_UDFBlock_SSP_CUST_INDIVIDUAL_BIZ_PRINCIPAL_BUSINESS_ADDRESS"]/tr[1]/td[2]/span[1]/div/label',
         'businessaddressOwnership':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_BIZ_PRINCIPAL_BUSINESS_ADDRESS_SSP_CUST_INDIVIDUAL_BIZ_ADDR_OWNERSHIP"]',
         'businessRegistrationList':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_BIZ_REGISTRATION_DETAILS_SSP_CUST_INDIVIDUAL_BIZ_BUSINESS_REGISTRATION0"]',
+        'businessRegistrationOthers':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_BIZ_REGISTRATION_DETAILS_SSP_CUST_INDIVIDUAL_BIZ_BUSINESS_REGISTRATION_OTHERS0"]',
         'dateRegistrationField':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_BIZ_REGISTRATION_DETAILS_SSP_CUST_INDIVIDUAL_BIZ_BUSINESS_REGISTRATION_DATE0"]',
         'expiryRegistrationField':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_BIZ_REGISTRATION_DETAILS_SSP_CUST_INDIVIDUAL_BIZ_BUSINESS_EXPIRY_DATE0"]',
         'registrationNumberField':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_BIZ_REGISTRATION_DETAILS_SSP_CUST_INDIVIDUAL_BIZ_BUSINESS_REGISTRATION_NO0"]',
-        'firmSizeButton':'//*[@id="UDF_SSP_CUST_INDIVIDUAL_BIZ_FIRM_SIZE_EMPLOYMENT_DETAILS_SSP_CUST_INDIVIDUAL_BIZ_FIRM_SIZE_2"]',
+        'firmSizeButton':'//*[@id="tbody_UDFBlock_SSP_CUST_INDIVIDUAL_BIZ_FIRM_SIZE_EMPLOYMENT_DETAILS"]/tr[1]/td[2]/span[2]/div/label',
         'repaymentofLoans':'//*[@id="available_UDF_SSP_CUST_INDIVIDUAL_SOURCE_OF_FUNDS_SSP_CUST_INDIVIDUAL_SOURCE_OF_FUNDS_REPAYMENT"]/option[1]',
         'addROLButton':'//*[@id="addBtn_UDF_SSP_CUST_INDIVIDUAL_SOURCE_OF_FUNDS_SSP_CUST_INDIVIDUAL_SOURCE_OF_FUNDS_REPAYMENT"]',
         'loanAmountField':'//*[@id="UDF_SSP_CUST_LOAN_APPLICATION_INFO_SSP_CUST_LOAN_APPLICATION_LOAN_AMOUNT"]',
@@ -52,7 +53,10 @@ locators = {
         'loanFacilityList':'//*[@id="UDF_SSP_CUST_LOAN_APPLICATION_INFO_SSP_CUST_LOAN_APPLICATION_LOAN_FACILITY"]',
         'loanPurposeList':'//*[@id="available_UDF_SSP_CUST_LOAN_APPLICATION_INFO_SSP_CUST_LOAN_APPLICATION_LOAN_PURPOSE"]/option[2]',
         'addloanPurposeButton':'//*[@id="addBtn_UDF_SSP_CUST_LOAN_APPLICATION_INFO_SSP_CUST_LOAN_APPLICATION_LOAN_PURPOSE"]',
-        'typeofLoanButton':'//*[@id="UDF_SSP_CUST_LOAN_APPLICATION_INFO_SSP_CUST_LOAN_APPLICATION_LOAN_TYPE_UNSECURED"]'
+        'typeofLoanButton':'//*[@id="udf_table_SSP_CUST_LOAN_APPLICATION_INFO"]/tbody/tr[4]/td[2]/span[2]/div/label',
+        'documentChecklist':'//*[@id="documentChecklistLegend"]',
+        'attachmentNameField':'documentName',
+        'fileUploadButton':''
 }
 
 branches = {
@@ -66,6 +70,10 @@ application_types = {
         "New Application": '//*[@id="udf_table_SSP_CUST_CUSTOMER_TYPES"]/tbody/tr[1]/td[4]/span[1]/div/label'
 }
 
+iframes = {
+    "sblaf_main_iframe":"productDetailsFrame",
+    "upload_document_iframe":"//iframe[contains(@class, 'fancybox-iframe')]"
+}
 
 
 

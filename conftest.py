@@ -36,6 +36,7 @@ def generate_fake_user():
     birthdate = faker.date_of_birth()
     formatted_birthdate = birthdate.strftime("%m/%d/%Y")
     company = profile["company"]
+    company = f"ITGOJT-{company}"
     phone = "09763853530"
     sss_number = f"{faker.random_int(10, 99)}-{faker.random_int(1000000, 9999999)}-{faker.random_int(0, 9)}"
     branch = "ANTIQUE-T.A. FORNIER"
@@ -44,25 +45,28 @@ def generate_fake_user():
     civil_status = "MARRIED"
     province = "METRO MANILA"
     city = "PASAY CITY"
-    years_in_operation = ""
-    website = ""
-    nature_of_business = ""
-    business_reg_type = ""
-    date_of_registration = ""
-    date_of_expiry = ""
-    business_reg_number = ""
+    years_in_operation = "17"
+    website = "www.testingatpnb.com"
+    nature_of_business = "Information & Communication"
+    specific_business = "Other information technology and computer service activities"
+    business_addr_ownership = "Owned (mortgaged)"
+    business_reg_type = "Others (Please specify)"
+    business_reg_type_others = "SEC"
+    date_of_registration = "01/20/2025"
+    date_of_expiry = "01/20/2030"
+    business_reg_number = "SEC0185762"
     firm_size = ""
-    loan_amount = ""
-    tenor = ""
-    payment_freq = ""
-    loan_facility = ""
+    loan_amount = "15000000"
+    tenor = "24"
+    payment_freq = "Annually"
+    loan_facility = "Credit Line"
     loan_type = ""
     
     return (
         profile, first_name, last_name, gender, company, formatted_birthdate,
         phone, sss_number, branch, application_type, salutation,
         civil_status, province, city, years_in_operation, website,
-        nature_of_business, business_reg_type, date_of_registration,
+        nature_of_business, specific_business, business_addr_ownership, business_reg_type, business_reg_type_others, date_of_registration,
         date_of_expiry, business_reg_number, firm_size, loan_amount,
         tenor, payment_freq, loan_facility, loan_type
         )
@@ -83,13 +87,16 @@ def generate_fake_spouse():
     last_name = faker.last_name_female() if gender == 'M' else faker.last_name_male()
     birthdate = faker.date_of_birth()
     formatted_birthdate = birthdate.strftime("%m/%d/%Y")
-    email = faker.email()
-    
+    email = faker.email() 
     return (
         first_name, last_name, formatted_birthdate, email
         )
 
-
+@pytest.fixture
+def generate_fake_file():
+    attachment_name = "TESTING"
+    file_name = "/home/user01/Documents/Test.pdf"
+    return attachment_name, file_name
     
 
 
