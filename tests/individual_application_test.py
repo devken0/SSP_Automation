@@ -253,7 +253,7 @@ def submit_sblaf_form(
     
     
     driver.execute_script("createAmlKyc('CTY000000253');")
-    
+    driver.switch_to.frame(0)
 
     
     #driver.switch_to.default_content()
