@@ -56,8 +56,13 @@ locators = {
         'typeofLoanButton':'//*[@id="udf_table_SSP_CUST_LOAN_APPLICATION_INFO"]/tbody/tr[4]/td[2]/span[2]/div/label',
         'documentChecklist':'//*[@id="documentChecklistLegend"]',
         'attachmentNameField':'documentName',
-        'fileUploadButton':''
-        
+        'fileUploadButton':'fileUpload',
+        'saveButton':'//*[@id="udfSection"]/table[2]/tbody/tr/td/table/tbody/tr[2]/td[2]/a',
+        'okayButton':'/html/body/div[13]/div/div[6]/button[1]',
+        'previewButton':'//*[@id="udfSection"]/table[2]/tbody/tr/td/table/tbody/tr[2]/td[3]/a',
+        'submitButton':'//*[@id="proceedButton"]',
+        'showESGButton':'//*[@id="loadingDiv"]/div/div[1]/div[2]/div/a',
+        'submitESGButton':'//*[@id="content-body"]/form/table[4]/tbody/tr/td/table/tbody/tr[2]/td/a'
         #Loading
         #//*[@id="loadingDiv"]/div/div[1]/div[2]/div/a
         #//*[@id="loadingDiv"]/div/div[1]/div[2]/div/a/span

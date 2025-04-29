@@ -251,58 +251,77 @@ def submit_sblaf_form(
     
     scroll_into_view(driver, by=By.XPATH, elementType=locators["documentChecklist"])
     
-    
     driver.execute_script("createAmlKyc('CTY000000253');")
-    driver.switch_to.frame(0)
-
-    
-    #driver.switch_to.default_content()
-    #switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
-    
-    #send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=longwait)
-    #send_keys_to_element(driver, By.XPATH, locators["fileUploadButton"], file_name, wait=wait)
+    switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
+    time.sleep(2)
+    send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=wait)
+    send_keys_to_element(driver, By.ID, locators["fileUploadButton"], file_name, wait=wait)
     driver.execute_script("performAction('create_document_checklist_att');")
-    
-    '''
+    time.sleep(1)
+    driver.switch_to.parent_frame()
 
     driver.execute_script("createAmlKyc('CTY000000255');")
-    switch_to_iframe(driver, By.ID, iframes["upload_document_iframe"], wait=wait)
-    send_keys_to_element(driver, By.XPATH, locators["attachmentNameField"], attachment_name, wait=wait)
-    send_keys_to_element(driver, By.XPATH, locators["fileUploadButton"], file_name, wait=wait)
+    switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
+    time.sleep(2)
+    send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=wait)
+    send_keys_to_element(driver, By.ID, locators["fileUploadButton"], file_name, wait=wait)
     driver.execute_script("performAction('create_document_checklist_att')")
+    time.sleep(1)
+    driver.switch_to.parent_frame()
 
     driver.execute_script("createAmlKyc('CTY000000257');")
-    switch_to_iframe(driver, By.ID, iframes["upload_document_iframe"], wait=wait)
-    send_keys_to_element(driver, By.XPATH, locators["attachmentNameField"], attachment_name, wait=wait)
-    send_keys_to_element(driver, By.XPATH, locators["fileUploadButton"], file_name, wait=wait)
+    switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
+    time.sleep(2)
+    send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=wait)
+    send_keys_to_element(driver, By.ID, locators["fileUploadButton"], file_name, wait=wait)
     driver.execute_script("performAction('create_document_checklist_att')")
+    time.sleep(1)
+    driver.switch_to.parent_frame()
 
     driver.execute_script("createAmlKyc('CTY000000015');")
-    switch_to_iframe(driver, By.ID, iframes["upload_document_iframe"], wait=wait)
-    send_keys_to_element(driver, By.XPATH, locators["attachmentNameField"], attachment_name, wait=wait)
-    send_keys_to_element(driver, By.XPATH, locators["fileUploadButton"], file_name, wait=wait)
+    switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
+    time.sleep(2)
+    send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=wait)
+    send_keys_to_element(driver, By.ID, locators["fileUploadButton"], file_name, wait=wait)
     driver.execute_script("performAction('create_document_checklist_att')")
+    time.sleep(1)
+    driver.switch_to.parent_frame()
     
     driver.execute_script("createAmlKyc('CTY000000243');")
-    switch_to_iframe(driver, By.ID, iframes["upload_document_iframe"], wait=wait)
-    send_keys_to_element(driver, By.XPATH, locators["attachmentNameField"], attachment_name, wait=wait)
-    send_keys_to_element(driver, By.XPATH, locators["fileUploadButton"], file_name, wait=wait)
+    switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
+    time.sleep(2)
+    send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=wait)
+    send_keys_to_element(driver, By.ID, locators["fileUploadButton"], file_name, wait=wait)
     driver.execute_script("performAction('create_document_checklist_att')")
+    time.sleep(1)
+    driver.switch_to.parent_frame()
     
     driver.execute_script("createAmlKyc('CTY000000256');")
-    switch_to_iframe(driver, By.ID, iframes["upload_document_iframe"], wait=wait)
-    send_keys_to_element(driver, By.XPATH, locators["attachmentNameField"], attachment_name, wait=wait)
-    send_keys_to_element(driver, By.XPATH, locators["fileUploadButton"], file_name, wait=wait)
+    switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
+    time.sleep(2)
+    send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=wait)
+    send_keys_to_element(driver, By.ID, locators["fileUploadButton"], file_name, wait=wait)
     driver.execute_script("performAction('create_document_checklist_att')")
+    time.sleep(1)
+    driver.switch_to.parent_frame()
     
-    switch_to_iframe(driver, By.ID, iframes["sblaf_main_iframe"], wait=longwait)
-    '''
+    driver.execute_script("performHpForm('Save');")
+    click_element(driver, By.XPATH, locators["okayButton"], wait=wait)
+    click_element(driver, By.XPATH, locators["previewButton"], wait=wait)
     
-    input("Press Enter to continue")
+    if auto_submit:
+        click_element(driver, By.XPATH, locators["submitButton"], wait=wait, scrollIntoView=True)
+    else:
+        click_element(driver, By.XPATH, locators["submitButton"], wait=longwait, scrollIntoView=True)
     
+    click_element(driver, By.XPATH, locators["showESGButton"], wait=wait)
+    click_element(driver, By.XPATH, locators["submitESGButton"], wait=wait, scrollIntoView=True)
+    
+    time.sleep(2)
+        
     #send_keys_to_element(driver, By.XPATH, locators["spouseEmail"], fake_)
     
-    #driver.switch_to.default_content() # switch back to the main page once done
+    #driver.switch_to.default_content() # exit all frames completely
     
     #upload_sblaf_docs()
     
