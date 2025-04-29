@@ -257,11 +257,11 @@ def submit_sblaf_form(
 
     
     #driver.switch_to.default_content()
-    switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
+    #switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
     
-    send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=longwait)
+    #send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=longwait)
     #send_keys_to_element(driver, By.XPATH, locators["fileUploadButton"], file_name, wait=wait)
-    #driver.execute_script("performAction('create_document_checklist_att');")
+    driver.execute_script("performAction('create_document_checklist_att');")
     
     '''
 
@@ -307,6 +307,7 @@ def submit_sblaf_form(
     #upload_sblaf_docs()
     
     #submit()
+    #driver.execute_script("submitPage();")
 
 def login_form():
     print(f"\n")
