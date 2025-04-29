@@ -57,11 +57,20 @@ locators = {
         'documentChecklist':'//*[@id="documentChecklistLegend"]',
         'attachmentNameField':'documentName',
         'fileUploadButton':''
+        
+        #Loading
+        #//*[@id="loadingDiv"]/div/div[1]/div[2]/div/a
+        #//*[@id="loadingDiv"]/div/div[1]/div[2]/div/a/span
+        
+        #ESG
+        #//*[@id="content-body"]/form/table[4]/tbody/tr/td/table/tbody/tr[2]/td/a[3]
+        #//*[@id="content-body"]/form/table[4]/tbody/tr/td/table/tbody/tr[2]/td/a[2]/span
 }
 
 branches = {
         "ANTIQUE-T.A. FORNIER":'//*[@id="branchList"]/li[21]',
         "CEBU BUSINESS PARK":'//*[@id="branchList"]/li[152]',
+        "GREENHILLS-CLUB FILIPINO DRIVE":'//*[@id="branchList"]/li[244]',
         "GREENHILLS-ORTIGAS AVE.":'//*[@id="branchList"]/li[245]',
         "HEAD OFFICE CENTER":'//*[@id="branchList"]/li[246]'
 }
