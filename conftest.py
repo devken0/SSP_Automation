@@ -24,7 +24,6 @@ def browser():
     longwait = WebDriverWait(driver, 999999)
 
     yield driver, wait, longwait # Returns both driver and wait
-
     driver.quit()
 
 @pytest.fixture

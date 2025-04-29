@@ -10,10 +10,12 @@ from config.locators import branches
 from config.locators import application_types
 from config.locators import iframes
 from config.settings import BASE_URL
+from config.settings import LOGIN_PAGE_URL
 
 logging.basicConfig(filename="../logs/test_logs.log", level=logging.INFO)
 fake_email = input("\nPlease enter your email: ")
 fake_tin = input("TIN: ")
+fake_password = "testing123"
 
 def test_loan_application(browser, generate_fake_user, generate_fake_spouse, generate_fake_mother, generate_fake_file):
     # Unpack returned values
@@ -48,6 +50,14 @@ def test_loan_application(browser, generate_fake_user, generate_fake_spouse, gen
         fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType, fake_spouse_fname, fake_spouse_lname, fake_spouse_dob, fake_spouse_email,
         fake_mother_fname, fake_mother_lname, fake_attachment_name, fake_file_name
         )
+    
+    driver.quit()
+    
+    driver.get(LOGIN_PAGE_URL)
+    
+    first_time_login(driver, wait, longwait, fake_tin, fake_email, fake_password)
+    
+    sign_in(driver, wait, longwait, fake_email, fake_password)
     
     #submit_application()
 
@@ -328,13 +338,27 @@ def submit_sblaf_form(
     #submit()
     #driver.execute_script("submitPage();")
 
-def login_form():
-    print(f"\n")
-    input("Press Enter to close...")
+def first_time_login(driver, wait, longwait, tin, email, password):
+    click_element(driver, By.XPATH, locators["firstTimeLoginButton"], wait=wait)
+    select_element(driver, By.XPATH, locators["firstTimeLoginIDType"], "TIN", wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["firstTimeLoginIDNumber"], tin, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["firstTimeLoginLoginID"], email, wait=wait)
+    click_element(driver, By.XPATH, locators["nextButton"], wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["newPassword"], password, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["confirmPassword"], password, wait=wait)
+    click_element(driver, By.XPATH, locators["submitPassword"], wait=wait)
+    click_element(driver, By.XPATH, locators["goToLogin"], wait=wait)
 
-
-def upload_sblaf_docs():
-    input("Press Enter to continue")
+def sign_in(driver, wait, longwait, email, password):
+    send_keys_to_element(driver, By.XPATH, locators["userName"], email, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["password"], password, wait=wait)
+    click_element(driver, By.XPATH, locators["signInButton"], wait=wait)    
+    wait.until(EC.presence_of_element_located((By.XPATH, locators["appListing"])))
+    time.sleep(1)
+    os.system("wmctrl -a Terminal")
+    os.system("wmctrl -a Thonny")
+    print(f"\nYou may now save these details:\nEmail: {email}\nPassword: {password}")
+    input("\n\nPress Enter to continue")
     
 
 

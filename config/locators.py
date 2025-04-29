@@ -62,14 +62,21 @@ locators = {
         'previewButton':'//*[@id="udfSection"]/table[2]/tbody/tr/td/table/tbody/tr[2]/td[3]/a',
         'submitButton':'//*[@id="proceedButton"]',
         'showESGButton':'//*[@id="loadingDiv"]/div/div[1]/div[2]/div/a',
-        'submitESGButton':'//*[@id="content-body"]/form/table[4]/tbody/tr/td/table/tbody/tr[2]/td/a'
-        #Loading
-        #//*[@id="loadingDiv"]/div/div[1]/div[2]/div/a
-        #//*[@id="loadingDiv"]/div/div[1]/div[2]/div/a/span
-        
-        #ESG
-        #//*[@id="content-body"]/form/table[4]/tbody/tr/td/table/tbody/tr[2]/td/a[3]
-        #//*[@id="content-body"]/form/table[4]/tbody/tr/td/table/tbody/tr[2]/td/a[2]/span
+        'submitESGButton':'//*[@id="content-body"]/form/table[4]/tbody/tr/td/table/tbody/tr[2]/td/a',
+        'userName':'//*[@id="userName"]',
+        'password':'//*[@id="password"]',
+        'signInButton':'//*[@id="btn_signin"]',
+        'firstTimeLoginButton':'//*[@id="btn_first_time_login"]',
+        'firstTimeLoginIDType':'//*[@id="idType"]',
+        'firstTimeLoginIDNumber':'//*[@id="idNumber"]',
+        'firstTimeLoginLoginID':'//*[@id="loginID"]',
+        'nextButton':'//*[@id="forgotPwdDiv"]/div[4]/a[2]',
+        'newPassword':'//*[@id="newPassword"]',
+        'confirmPassword':'//*[@id="confirmPassword"]',
+        'submitPassword':'//*[@id="changePwdDiv"]/div[4]/a[2]',
+        'goToLogin':'//*[@id="ackMessageDiv"]/div[3]/a',
+        'applicationDetails':'//*[@id="listingTable"]/table/tbody/tr/td[3]/a',
+        'appListing':'//*[@id="customer_data"]/div[1]/p/span[1]'
 }
 
 branches = {
