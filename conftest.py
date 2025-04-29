@@ -21,7 +21,7 @@ def browser():
 
     driver = webdriver.Chrome(service=service, options=options)
     wait = WebDriverWait(driver, WAIT_DURATION)
-    longwait = WebDriverWait(driver, 1000)
+    longwait = WebDriverWait(driver, 999999)
 
     yield driver, wait, longwait # Returns both driver and wait
 
@@ -37,9 +37,9 @@ def generate_fake_user():
     formatted_birthdate = birthdate.strftime("%m/%d/%Y")
     company = profile["company"]
     company = f"ITGOJT {company}"
-    phone = "09763853530"
+    phone = "09765104860"
     sss_number = f"{faker.random_int(10, 99)}-{faker.random_int(1000000, 9999999)}-{faker.random_int(0, 9)}"
-    branch = "GREENHILLS-ORTIGAS AVE."
+    branch = "GREENHILLS-CLUB FILIPINO DRIVE"
     application_type = "New Application"
     salutation = "Mister" if gender == "M" else "Miss"
     civil_status = "MARRIED"
@@ -95,7 +95,7 @@ def generate_fake_spouse():
 @pytest.fixture
 def generate_fake_file():
     attachment_name = "TESTING"
-    file_name = "/home/user01/Documents/Test.pdf"
+    file_name = "/home/user01/Music/Test.pdf"
     return attachment_name, file_name
     
 
