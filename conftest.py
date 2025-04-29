@@ -36,10 +36,10 @@ def generate_fake_user():
     birthdate = faker.date_of_birth()
     formatted_birthdate = birthdate.strftime("%m/%d/%Y")
     company = profile["company"]
-    company = f"ITGOJT-{company}"
+    company = f"ITGOJT {company}"
     phone = "09763853530"
     sss_number = f"{faker.random_int(10, 99)}-{faker.random_int(1000000, 9999999)}-{faker.random_int(0, 9)}"
-    branch = "ANTIQUE-T.A. FORNIER"
+    branch = "GREENHILLS-ORTIGAS AVE."
     application_type = "New Application"
     salutation = "Mister" if gender == "M" else "Miss"
     civil_status = "MARRIED"
