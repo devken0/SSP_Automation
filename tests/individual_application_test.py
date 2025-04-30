@@ -16,6 +16,9 @@ logging.basicConfig(filename="../logs/test_logs.log", level=logging.INFO)
 fake_email = input("\nPlease enter your email: ")
 fake_tin = input("TIN: ")
 fake_password = "testing123"
+choice = input("Auto submit? (Y/n)").strip().lower()
+if not choice:
+    auto_submit = True
 
 def test_loan_application(browser, generate_fake_user, generate_fake_spouse, generate_fake_mother, generate_fake_file):
     # Unpack returned values
@@ -50,8 +53,6 @@ def test_loan_application(browser, generate_fake_user, generate_fake_spouse, gen
         fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType, fake_spouse_fname, fake_spouse_lname, fake_spouse_dob, fake_spouse_email,
         fake_mother_fname, fake_mother_lname, fake_attachment_name, fake_file_name
         )
-    
-    driver.quit()
     
     driver.get(LOGIN_PAGE_URL)
     
@@ -356,9 +357,7 @@ def sign_in(driver, wait, longwait, email, password):
     wait.until(EC.presence_of_element_located((By.XPATH, locators["appListing"])))
     time.sleep(1)
     os.system("wmctrl -a Terminal")
-    os.system("wmctrl -a Thonny")
+    #os.system("wmctrl -a Thonny")
     print(f"\nYou may now save these details:\nEmail: {email}\nPassword: {password}")
     input("\n\nPress Enter to continue")
-    
-
 
