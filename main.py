@@ -8,7 +8,6 @@ if __name__ == "__main__":
         pytest.main(["-s", "tests/", "--html=reports/test_report.html"])
         
         os.system("wmctrl -a Terminal")
-        os.system("wmctrl -a Thonny")
         choice = input("\nWould you like to run another test? (Y/n)").strip().lower()
         if not choice:
             choice = "y"
