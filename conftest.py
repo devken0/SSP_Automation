@@ -8,7 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from config.settings import CHROMEDRIVER_PATH, CHROMIUM_PATH, WAIT_DURATION
 
 faker = Faker("en_PH")
-fake_user_gender = ""
+gender = ""
 
 @pytest.fixture
 def browser():
@@ -28,10 +28,9 @@ def browser():
 
 @pytest.fixture
 def generate_fake_user():
-    profile = faker.profile()
-    first_name, last_name = profile["name"].split(" ", 1) 
     gender = profile["sex"]
-    fake_user_gender = gender
+    first_name = faker.first_name_female() if gender == 'F' else faker.first_name_male()
+    last_name = faker.last_name_female() if gender == 'F' else faker.last_name_male()
     birthdate = faker.date_of_birth()
     formatted_birthdate = birthdate.strftime("%m/%d/%Y")
     company = profile["company"]
@@ -81,7 +80,6 @@ def generate_fake_mother():
 
 @pytest.fixture
 def generate_fake_spouse():
-    gender = fake_user_gender
     first_name = faker.first_name_female() if gender == 'M' else faker.first_name_male()
     last_name = faker.last_name_female() if gender == 'M' else faker.last_name_male()
     birthdate = faker.date_of_birth()
