@@ -28,6 +28,7 @@ def browser():
 
 @pytest.fixture
 def generate_fake_user():
+    profile = faker.profile()
     gender = profile["sex"]
     first_name = faker.first_name_female() if gender == 'F' else faker.first_name_male()
     last_name = faker.last_name_female() if gender == 'F' else faker.last_name_male()
