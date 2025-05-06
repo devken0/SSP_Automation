@@ -1,3 +1,5 @@
+import os
+import time
 import pytest
 import logging
 from faker import Faker
@@ -5,10 +7,61 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
-from config.settings import CHROMEDRIVER_PATH, CHROMIUM_PATH, WAIT_DURATION
+from config.settings import CHROMEDRIVER_PATH, CHROMIUM_PATH, WAIT_DURATION, DEFAULT_PHONE, DEFAULT_BRANCH, DEFAULT_PASSWORD, DEFAULT_SPOUSE_EMAIL
 
 faker = Faker("en_PH")
-gender = ""
+profile = faker.profile()
+gender = profile["sex"]
+settings_file_path = "config/settings.py"
+with open(settings_file_path, "r") as file:
+    lines = file.readlines()
+
+@pytest.fixture
+def new_application():
+    os.system("wmctrl -a Terminal")
+    email = input("\nPlease enter your email: ")
+    password = DEFAULT_PASSWORD
+    choice = input(f"Use default spouse email {DEFAULT_SPOUSE_EMAIL}? (Y/n)").strip().lower()
+    if not choice or choice == "y": spouse_email = DEFAULT_SPOUSE_EMAIL 
+    else: 
+        spouse_email = input("New spouse email: ").strip()
+        with open(settings_file_path, "w") as file:
+            for line in lines:
+                if line.startswith("DEFAULT_SPOUSE_EMAIL"):
+                    file.write(f'DEFAULT_SPOUSE_EMAIL = "{spouse_email}"\n')
+                    print(f"Spouse email updated successfully.")
+                else: file.write(line)
+    choice = input(f"Use default phone number {DEFAULT_PHONE}? (Y/n)").strip().lower()
+    if not choice or choice == "y": phone = DEFAULT_PHONE
+    else: 
+        phone = input("New phone number: ").strip()
+        with open(settings_file_path, "w") as file:
+            for line in lines:
+                if line.startswith("DEFAULT_PHONE"):
+                    file.write(f'DEFAULT_PHONE = "{phone}"\n')
+                    print(f"Phone number updated successfully.")
+                else: file.write(line)
+    choice = input(f"Use default branch {DEFAULT_BRANCH}? (Y/n)").strip().lower()
+    if not choice or choice == "y": branch = DEFAULT_BRANCH
+    else: 
+        os.system("cat config/branches.txt") 
+        print("Please find the exact name of your branch above.")
+        branch = input("New branch: ").strip()
+        with open(settings_file_path, "w") as file:
+            for line in lines:
+                if line.startswith("DEFAULT_BRANCH"):
+                    file.write(f'DEFAULT_BRANCH = "{branch}"\n')
+                    print(f"New branch selected successfully.")
+                else: file.write(line)
+    #choice = input("Preview SBLAF Form? (Y/n)").strip().lower()
+    #if not choice or choice == "y": auto_submit = False
+    #else: auto_submit = True; print("Application will be submitted automatically.")
+    auto_submit = ""
+    print("Starting browser...")
+    time.sleep(2)
+    return (
+        email, password, auto_submit, phone, branch
+    )
 
 @pytest.fixture
 def browser():
@@ -28,8 +81,6 @@ def browser():
 
 @pytest.fixture
 def generate_fake_user():
-    profile = faker.profile()
-    gender = profile["sex"]
     first_name = faker.first_name_female() if gender == 'F' else faker.first_name_male()
     last_name = faker.last_name_female() if gender == 'F' else faker.last_name_male()
     birthdate = faker.date_of_birth()
@@ -38,7 +89,8 @@ def generate_fake_user():
     company = f"ITGOJT {company}"
     phone = "09765104860"
     sss_number = f"{faker.random_int(10, 99)}-{faker.random_int(1000000, 9999999)}-{faker.random_int(0, 9)}"
-    branch = "GREENHILLS-CLUB FILIPINO DRIVE"
+    tin = f"{faker.random_int(100000000, 999999999)}"
+    branch = "BGC-10TH AVENUE"
     application_type = "New Application"
     salutation = "Mister" if gender == "M" else "Miss"
     civil_status = "MARRIED"
@@ -62,8 +114,8 @@ def generate_fake_user():
     loan_type = ""
     
     return (
-        profile, first_name, last_name, gender, company, formatted_birthdate,
-        phone, sss_number, branch, application_type, salutation,
+        first_name, last_name, gender, company, formatted_birthdate,
+        sss_number, tin, application_type, salutation,
         civil_status, province, city, years_in_operation, website,
         nature_of_business, specific_business, business_addr_ownership, business_reg_type, business_reg_type_others, date_of_registration,
         date_of_expiry, business_reg_number, firm_size, loan_amount,
@@ -85,7 +137,7 @@ def generate_fake_spouse():
     last_name = faker.last_name_female() if gender == 'M' else faker.last_name_male()
     birthdate = faker.date_of_birth()
     formatted_birthdate = birthdate.strftime("%m/%d/%Y")
-    email = faker.email() 
+    email = DEFAULT_SPOUSE_EMAIL
     return (
         first_name, last_name, formatted_birthdate, email
         )
