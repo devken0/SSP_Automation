@@ -13,14 +13,8 @@ from config.settings import BASE_URL
 from config.settings import LOGIN_PAGE_URL
 
 logging.basicConfig(filename="../logs/test_logs.log", level=logging.INFO)
-fake_email = input("\nPlease enter your email: ")
-fake_tin = input("TIN: ")
-fake_password = "testing123"
-choice = input("Auto submit? (Y/n)").strip().lower()
-if not choice:
-    auto_submit = True
 
-def test_loan_application(browser, generate_fake_user, generate_fake_spouse, generate_fake_mother, generate_fake_file):
+def test_loan_application(new_application, browser, generate_fake_user, generate_fake_spouse, generate_fake_mother, generate_fake_file):
     # Unpack returned values
     '''
     profile, first_name, last_name, gender, company, formatted_birthdate,
@@ -30,7 +24,7 @@ def test_loan_application(browser, generate_fake_user, generate_fake_spouse, gen
     date_of_expiry, business_reg_number, firm_size, loan_amount,
     tenor, payment_freq, loan_facility, loan_type
     '''
-    (fake_profile, fake_fname, fake_lname, fake_gender, fake_company, fake_dob, fake_phone, fake_sss, fake_branchChoice,
+    (fake_fname, fake_lname, fake_gender, fake_company, fake_dob, fake_sss, fake_tin,
      fake_application_type, fake_salutation,fake_civilStatus, fake_province, fake_city, fake_yrsInOps, fake_website,
      fake_nob, fake_specific_business, fake_business_addr_ownership, fake_regType, fake_regTypeOthers, fake_dateOfReg, fake_dateOfExp, fake_regNum, fake_firmSize, fake_loanAmount,
      fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType) = generate_fake_user
@@ -38,8 +32,12 @@ def test_loan_application(browser, generate_fake_user, generate_fake_spouse, gen
     (fake_mother_fname, fake_mother_lname) = generate_fake_mother
     fake_attachment_name, fake_file_name = generate_fake_file
     driver, wait, longwait = browser
+    fake_email, fake_password, auto_submit, fake_phone, fake_branchChoice = new_application
 
     driver.get(BASE_URL)
+    
+    #os.system("wmctrl -a Terminal")
+    
 
     #logging.info("Starting test...")
 
@@ -51,7 +49,7 @@ def test_loan_application(browser, generate_fake_user, generate_fake_spouse, gen
         driver, wait, longwait, fake_application_type, fake_salutation, fake_company, fake_tin, fake_civilStatus, fake_province, fake_city,
         fake_yrsInOps, fake_website, fake_nob, fake_specific_business, fake_business_addr_ownership, fake_regType, fake_regTypeOthers, fake_dateOfReg, fake_dateOfExp, fake_regNum, fake_firmSize, fake_loanAmount,
         fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType, fake_spouse_fname, fake_spouse_lname, fake_spouse_dob, fake_spouse_email,
-        fake_mother_fname, fake_mother_lname, fake_attachment_name, fake_file_name
+        fake_mother_fname, fake_mother_lname, fake_attachment_name, fake_file_name, auto_submit
         )
     
     driver.get(LOGIN_PAGE_URL)
@@ -151,7 +149,7 @@ def start_application(driver, wait, fake_branchChoice):
     click_element(driver, By.XPATH, locators["startApplicationBtn"], wait=wait)
     click_element(driver, By.XPATH, locators["branchList"], wait=wait)
     time.sleep(1)
-    click_element(driver, By.XPATH, branches[f"{fake_branchChoice}"], wait=wait, scrollIntoView=True, branch=fake_branchChoice)
+    click_element(driver, By.XPATH, f'//span[@class="mdc-deprecated-list-item__text" and text()="{fake_branchChoice}"]', wait=wait, scrollIntoView=True, branch=fake_branchChoice)
     driver.execute_script("displayForm(5, 'NEXT');")
     click_element(driver, By.ID, locators["creditProgramChoice"], wait=wait)
     driver.execute_script("displayForm(2, 'NEXT');")
@@ -185,9 +183,9 @@ def get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_
     sexList.click()
 
     if fake_gender == "F":
-        sexChoiceValue = '[data-value="M"]'
+        sexChoiceValue = '[data-value="F"]'
     else:
-        sexChoiceValue = locators["sexChoice"]
+        sexChoiceValue = '[data-value="M"]'
             
     sexChoice = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, sexChoiceValue)))
     driver.execute_script("arguments[0].scrollIntoView(true);", sexChoice) 
@@ -217,7 +215,7 @@ def submit_sblaf_form(
     business_reg_type, business_reg_type_others, date_of_registration,
     date_of_expiry, business_reg_number, firm_size, loan_amount, tenor, payment_freq,
     loan_facility, loan_type, spouse_fname, spouse_lname, spouse_dob, spouse_email,
-    mother_fname, mother_lname, attachment_name, file_name
+    mother_fname, mother_lname, attachment_name, file_name, auto_submit
     ):
     
     switch_to_iframe(driver, By.ID, iframes["sblaf_main_iframe"], wait=longwait)
@@ -266,19 +264,21 @@ def submit_sblaf_form(
     switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
     time.sleep(2)
     send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=wait)
-    send_keys_to_element(driver, By.ID, locators["fileUploadButton"], file_name, wait=wait)
+    send_keys_to_element(driver, By.ID, locators["fileUploadButton"], file_name, wait=longwait)
     driver.execute_script("performAction('create_document_checklist_att');")
-    time.sleep(1)
+    time.sleep(2)
     driver.switch_to.parent_frame()
+    wait.until(EC.presence_of_element_located((By.XPATH, locators["documentChecklist"])))
 
     driver.execute_script("createAmlKyc('CTY000000255');")
     switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
     time.sleep(2)
-    send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=wait)
+    send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=longwait)
     send_keys_to_element(driver, By.ID, locators["fileUploadButton"], file_name, wait=wait)
     driver.execute_script("performAction('create_document_checklist_att')")
-    time.sleep(1)
+    time.sleep(2)
     driver.switch_to.parent_frame()
+    wait.until(EC.presence_of_element_located((By.XPATH, locators["documentChecklist"])))
 
     driver.execute_script("createAmlKyc('CTY000000257');")
     switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
@@ -286,8 +286,9 @@ def submit_sblaf_form(
     send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=wait)
     send_keys_to_element(driver, By.ID, locators["fileUploadButton"], file_name, wait=wait)
     driver.execute_script("performAction('create_document_checklist_att')")
-    time.sleep(1)
+    time.sleep(2)
     driver.switch_to.parent_frame()
+    wait.until(EC.presence_of_element_located((By.XPATH, locators["documentChecklist"])))
 
     driver.execute_script("createAmlKyc('CTY000000015');")
     switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
@@ -295,8 +296,9 @@ def submit_sblaf_form(
     send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=wait)
     send_keys_to_element(driver, By.ID, locators["fileUploadButton"], file_name, wait=wait)
     driver.execute_script("performAction('create_document_checklist_att')")
-    time.sleep(1)
+    time.sleep(2)
     driver.switch_to.parent_frame()
+    wait.until(EC.presence_of_element_located((By.XPATH, locators["documentChecklist"])))
     
     driver.execute_script("createAmlKyc('CTY000000243');")
     switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
@@ -304,8 +306,9 @@ def submit_sblaf_form(
     send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=wait)
     send_keys_to_element(driver, By.ID, locators["fileUploadButton"], file_name, wait=wait)
     driver.execute_script("performAction('create_document_checklist_att')")
-    time.sleep(1)
+    time.sleep(2)
     driver.switch_to.parent_frame()
+    wait.until(EC.presence_of_element_located((By.XPATH, locators["documentChecklist"])))
     
     driver.execute_script("createAmlKyc('CTY000000256');")
     switch_to_iframe(driver, By.XPATH, iframes["upload_document_iframe"], wait=wait)
@@ -313,42 +316,42 @@ def submit_sblaf_form(
     send_keys_to_element(driver, By.NAME, locators["attachmentNameField"], attachment_name, wait=wait)
     send_keys_to_element(driver, By.ID, locators["fileUploadButton"], file_name, wait=wait)
     driver.execute_script("performAction('create_document_checklist_att')")
-    time.sleep(1)
+    time.sleep(2)
     driver.switch_to.parent_frame()
+    wait.until(EC.presence_of_element_located((By.XPATH, locators["documentChecklist"])))
     
-    driver.execute_script("performHpForm('Save');")
+    click_element(driver, By.XPATH, locators["saveButton"], wait=wait)
     click_element(driver, By.XPATH, locators["okayButton"], wait=wait)
     click_element(driver, By.XPATH, locators["previewButton"], wait=wait)
-    
-    if auto_submit:
-        click_element(driver, By.XPATH, locators["submitButton"], wait=wait, scrollIntoView=True)
-    else:
-        time.sleep(10)
-        click_element(driver, By.XPATH, locators["submitButton"], wait=longwait, scrollIntoView=True)
+
+    time.sleep(20)
+    click_element(driver, By.XPATH, locators["submitButton"], wait=longwait, scrollIntoView=True)
     
     click_element(driver, By.XPATH, locators["showESGButton"], wait=longwait)
-    click_element(driver, By.XPATH, locators["submitESGButton"], wait=longwait, scrollIntoView=True)
+    
+    time.sleep(3)
+  
+    #driver.switch_to.default_content() # exit all frames completely
+    
+    input("Press enter to continue")
+    #driver.execute_script("submit();")
+    #click_element(driver, By.XPATH, locators["submitESGButton"], wait=longwait, scrollIntoView=True)
     
     time.sleep(2)
         
-    #send_keys_to_element(driver, By.XPATH, locators["spouseEmail"], fake_)
     
-    #driver.switch_to.default_content() # exit all frames completely
-    
-    #upload_sblaf_docs()
-    
-    #submit()
-    #driver.execute_script("submitPage();")
-
 def first_time_login(driver, wait, longwait, tin, email, password):
     click_element(driver, By.XPATH, locators["firstTimeLoginButton"], wait=wait)
     select_element(driver, By.XPATH, locators["firstTimeLoginIDType"], "TIN", wait=wait)
     send_keys_to_element(driver, By.XPATH, locators["firstTimeLoginIDNumber"], tin, wait=wait)
     send_keys_to_element(driver, By.XPATH, locators["firstTimeLoginLoginID"], email, wait=wait)
     click_element(driver, By.XPATH, locators["nextButton"], wait=wait)
+    time.sleep(2)
     send_keys_to_element(driver, By.XPATH, locators["newPassword"], password, wait=longwait)
     send_keys_to_element(driver, By.XPATH, locators["confirmPassword"], password, wait=wait)
+    time.sleep(1)
     click_element(driver, By.XPATH, locators["submitPassword"], wait=wait)
+    time.sleep(3)
     click_element(driver, By.XPATH, locators["goToLogin"], wait=wait)
 
 def sign_in(driver, wait, longwait, email, password, company):
