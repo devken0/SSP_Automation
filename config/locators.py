@@ -62,9 +62,9 @@ locators = {
         'previewButton':'//*[@id="udfSection"]/table[2]/tbody/tr/td/table/tbody/tr[2]/td[3]/a',
         'submitButton':'//*[@id="proceedButton"]',
         'showESGButton':'//*[@id="loadingDiv"]/div/div[1]/div[2]/div/a',
-        'submitESGButton':'//*[@id="content-body"]/form/table[4]/tbody/tr/td/table/tbody/tr[2]/td/a',
+        'ESGquestionnaire':'//*[@id="content-body"]/form/table[2]/tbody/tr[1]/td/h3/input',
         'userName':'//*[@id="userName"]',
-        'password':'//*[@id="password"]',
+        'password':'//*[@id="newPassword"]',
         'signInButton':'//*[@id="btn_signin"]',
         'firstTimeLoginButton':'//*[@id="btn_first_time_login"]',
         'firstTimeLoginIDType':'//*[@id="idType"]',
@@ -84,7 +84,12 @@ branches = {
         "CEBU BUSINESS PARK":'//*[@id="branchList"]/li[152]',
         "GREENHILLS-CLUB FILIPINO DRIVE":'//*[@id="branchList"]/li[244]',
         "GREENHILLS-ORTIGAS AVE.":'//*[@id="branchList"]/li[245]',
-        "HEAD OFFICE CENTER":'//*[@id="branchList"]/li[246]'
+        "HEAD OFFICE CENTER":'//*[@id="branchList"]/li[246]',
+        "MAKATI-ALLIED BANK CENTER":'//*[@id="branchList"]/li[332]/span[2]',
+        'MAKATI-AGUIRRE':'//*[@id="branchList"]/li[331]/span[2]',
+        'MAKATI-AMORSOLO':'//*[@id="branchList"]/li[333]/span[2]',
+        'BGC 7TH AVENUE':'//*[@id="branchList"]/li[62]',
+        'BGC ONE MCKINLEY PLACE':'//*[@id="branchList"]/li[63]'
 }
 
 application_types = {
