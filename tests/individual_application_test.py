@@ -34,13 +34,14 @@ def test_loan_application(new_application, browser, generate_fake_user, generate
     driver, wait, longwait = browser
     fake_email, fake_password, auto_submit, fake_phone, fake_branchChoice = new_application
 
-    driver.get(BASE_URL)
+    #driver.get(BASE_URL)
     
     #os.system("wmctrl -a Terminal")
     
 
     #logging.info("Starting test...")
 
+    '''
     start_application(driver, wait, fake_branchChoice)
 
     get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_dob, fake_sss, fake_email, fake_phone)
@@ -51,10 +52,10 @@ def test_loan_application(new_application, browser, generate_fake_user, generate
         fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType, fake_spouse_fname, fake_spouse_lname, fake_spouse_dob, fake_spouse_email,
         fake_mother_fname, fake_mother_lname, fake_attachment_name, fake_file_name, auto_submit
         )
-    
+    '''
     driver.get(LOGIN_PAGE_URL)
     
-    first_time_login(driver, wait, longwait, fake_tin, fake_email, fake_password)
+    #first_time_login(driver, wait, longwait, fake_tin, fake_email, fake_password)
     
     sign_in(driver, wait, longwait, fake_email, fake_password, fake_company)
     
@@ -348,7 +349,7 @@ def first_time_login(driver, wait, longwait, tin, email, password):
     click_element(driver, By.XPATH, locators["nextButton"], wait=wait)
     time.sleep(2)
     send_keys_to_element(driver, By.XPATH, locators["newPassword"], password, wait=longwait)
-    send_keys_to_element(driver, By.XPATH, locators["confirmPassword"], password, wait=wait)
+    send_keys_to_element(driver, By.XPATH, locators["confirmPassword"], password, wait=longwait)
     time.sleep(1)
     click_element(driver, By.XPATH, locators["submitPassword"], wait=wait)
     time.sleep(3)
@@ -356,10 +357,10 @@ def first_time_login(driver, wait, longwait, tin, email, password):
 
 def sign_in(driver, wait, longwait, email, password, company):
     send_keys_to_element(driver, By.XPATH, locators["userName"], email, wait=wait)
-    send_keys_to_element(driver, By.XPATH, locators["password"], password, wait=wait)
+    send_keys_to_element(driver, By.NAME, locators["password", password, wait=wait)
     click_element(driver, By.XPATH, locators["signInButton"], wait=longwait)    
     longwait.until(EC.presence_of_element_located((By.XPATH, locators["appListing"])))
-    time.sleep(1)
+    time.sleep(2)
     os.system("wmctrl -a Terminal")
     #os.system("wmctrl -a Thonny")
     print(f"\nYou may now save these details:\nCompany name: {company}\nEmail: {email}\nPassword: {password}")
