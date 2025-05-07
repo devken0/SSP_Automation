@@ -1,6 +1,8 @@
 import time
 import os
 import logging
+import sys
+import pyperclip
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
@@ -57,7 +59,7 @@ def test_loan_application(new_application, browser, generate_fake_user, generate
     
     #first_time_login(driver, wait, longwait, fake_tin, fake_email, fake_password)
     
-    sign_in(driver, wait, longwait, fake_email, fake_password, fake_company)
+    sign_in(driver, wait, longwait, fake_email, fake_password, fake_company, fake_branchChoice)
     
     #submit_application()
 
@@ -339,7 +341,6 @@ def submit_sblaf_form(
     #click_element(driver, By.XPATH, locators["submitESGButton"], wait=longwait, scrollIntoView=True)
     
     time.sleep(2)
-        
     
 def first_time_login(driver, wait, longwait, tin, email, password):
     click_element(driver, By.XPATH, locators["firstTimeLoginButton"], wait=wait)
@@ -355,14 +356,42 @@ def first_time_login(driver, wait, longwait, tin, email, password):
     time.sleep(3)
     click_element(driver, By.XPATH, locators["goToLogin"], wait=wait)
 
-def sign_in(driver, wait, longwait, email, password, company):
+def sign_in(driver, wait, longwait, email, password, company, branch):
     send_keys_to_element(driver, By.XPATH, locators["userName"], email, wait=wait)
-    send_keys_to_element(driver, By.NAME, locators["password", password, wait=wait)
+    send_keys_to_element(driver, By.NAME, locators["password"], password, wait=wait)
     click_element(driver, By.XPATH, locators["signInButton"], wait=longwait)    
-    longwait.until(EC.presence_of_element_located((By.XPATH, locators["appListing"])))
+    #longwait.until(EC.presence_of_element_located((By.XPATH, locators["appListing"])))
     time.sleep(2)
     os.system("wmctrl -a Terminal")
-    #os.system("wmctrl -a Thonny")
-    print(f"\nYou may now save these details:\nCompany name: {company}\nEmail: {email}\nPassword: {password}")
-    input("\n\nPress Enter to continue")
-
+    while True:
+        first_adobe_sign = input("First Time Adobe Sign? (y/n)")
+        if first_adobe_sign == "y" or first_adobe_sign == "Y":
+            first_adobe_sign = "Yes"
+            break;
+        elif first_adobe_sign == "n" or first_adobe_sign == "N": 
+            first_adobe_sign = "No"
+            adobe_sign_retries = ""
+            while True:
+                choice = input("Did you see a retry button? (Y/n)")
+                if not choice or choice == "y" or choice == "Y":
+                    adobe_sign_retries = "No retry button"
+                    break;
+                elif choice == "n" or choice == "N": 
+                    while not adobe_sign_retries.isdigit():
+                        adobe_sign_retries = input("Adobe Sign Retry #: ")
+                else:
+                    continue
+                break;
+            break;
+        else:
+            continue;
+    application_info = f"{company}\tIndividual\t{email}\t{branch}\t{first_adobe_sign}\tYes\tYes\tYes\t{adobe_sign_retries}" 
+    pyperclip.copy(application_info)
+    print("\nTest application saved and copied to clipboard.")
+    print(f"\nReminder: Your account's password is {password}\n")
+    time.sleep(1)
+    loading_chars = ['/', '-', '\\', '|']  # Characters to cycle through
+    for _ in range(10):
+        for char in loading_chars:
+            print(f"\rClosing... {char}", end="")
+            time.sleep(0.1)
