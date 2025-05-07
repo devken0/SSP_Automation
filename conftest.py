@@ -13,6 +13,7 @@ faker = Faker("en_PH")
 profile = faker.profile()
 gender = profile["sex"]
 settings_file_path = "config/settings.py"
+branches_file_path = "data/branches.txt"
 with open(settings_file_path, "r") as file:
     lines = file.readlines()
 
@@ -44,7 +45,7 @@ def new_application():
     choice = input(f"Use default branch {DEFAULT_BRANCH}? (Y/n)").strip().lower()
     if not choice or choice == "y": branch = DEFAULT_BRANCH
     else: 
-        os.system("cat config/branches.txt") 
+        os.system(f"cat {branches_file_path}") 
         print("Please find the exact name of your branch above.")
         branch = input("New branch: ").strip()
         with open(settings_file_path, "w") as file:
