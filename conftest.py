@@ -2,58 +2,58 @@ import os
 import time
 import pytest
 import logging
+import importlib
+import config.settings
 from faker import Faker
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
-from config.settings import CHROMEDRIVER_PATH, CHROMIUM_PATH, WAIT_DURATION, DEFAULT_PHONE, DEFAULT_BRANCH, DEFAULT_PASSWORD, DEFAULT_SPOUSE_EMAIL
 
 faker = Faker("en_PH")
 profile = faker.profile()
 gender = profile["sex"]
 settings_file_path = "config/settings.py"
 branches_file_path = "data/branches.txt"
-with open(settings_file_path, "r") as file:
-    lines = file.readlines()
+
+def update_config_value(setting_name, new_value):
+    with open(settings_file_path, "r") as file:
+        lines = file.readlines()
+    
+    with open(settings_file_path, "w") as file:
+        for line in lines:
+            if line.startswith(setting_name):
+                file.write(f'{setting_name} = "{new_value}"\n')
+                print(f"{setting_name} updated successfully.")
+            else:
+                file.write(line)
+
+def pytest_runtest_setup():
+    importlib.reload(config.settings)
+    print(f"\n\nUpdated values:\nSpouse Email: {config.settings.DEFAULT_SPOUSE_EMAIL}\nPhone: {config.settings.DEFAULT_PHONE}\nBranch: {config.settings.DEFAULT_BRANCH}")
 
 @pytest.fixture
 def new_application():
     os.system("wmctrl -a Terminal")
     email = input("\nPlease enter your email: ")
-    password = DEFAULT_PASSWORD
-    choice = input(f"Use default spouse email {DEFAULT_SPOUSE_EMAIL}? (Y/n)").strip().lower()
-    if not choice or choice == "y": spouse_email = DEFAULT_SPOUSE_EMAIL 
+    password = config.settings.DEFAULT_PASSWORD
+    choice = input(f"Use default spouse email {config.settings.DEFAULT_SPOUSE_EMAIL}? (Y/n)").strip().lower()
+    if not choice or choice == "y": spouse_email = config.settings.DEFAULT_SPOUSE_EMAIL
     else: 
         spouse_email = input("New spouse email: ").strip()
-        with open(settings_file_path, "w") as file:
-            for line in lines:
-                if line.startswith("DEFAULT_SPOUSE_EMAIL"):
-                    file.write(f'DEFAULT_SPOUSE_EMAIL = "{spouse_email}"\n')
-                    print(f"Spouse email updated successfully.")
-                else: file.write(line)
-    choice = input(f"Use default phone number {DEFAULT_PHONE}? (Y/n)").strip().lower()
-    if not choice or choice == "y": phone = DEFAULT_PHONE
+        update_config_value("DEFAULT_SPOUSE_EMAIL", spouse_email)
+    choice = input(f"Use default phone number {config.settings.DEFAULT_PHONE}? (Y/n)").strip().lower()
+    if not choice or choice == "y": phone = config.settings.DEFAULT_PHONE
     else: 
         phone = input("New phone number: ").strip()
-        with open(settings_file_path, "w") as file:
-            for line in lines:
-                if line.startswith("DEFAULT_PHONE"):
-                    file.write(f'DEFAULT_PHONE = "{phone}"\n')
-                    print(f"Phone number updated successfully.")
-                else: file.write(line)
-    choice = input(f"Use default branch {DEFAULT_BRANCH}? (Y/n)").strip().lower()
-    if not choice or choice == "y": branch = DEFAULT_BRANCH
+        update_config_value("DEFAULT_PHONE", phone)
+    choice = input(f"Use default branch {config.settings.DEFAULT_BRANCH}? (Y/n)").strip().lower()
+    if not choice or choice == "y": branch = config.settings.DEFAULT_BRANCH
     else: 
         os.system(f"cat {branches_file_path}") 
         print("Please find the exact name of your branch above.")
         branch = input("New branch: ").strip()
-        with open(settings_file_path, "w") as file:
-            for line in lines:
-                if line.startswith("DEFAULT_BRANCH"):
-                    file.write(f'DEFAULT_BRANCH = "{branch}"\n')
-                    print(f"New branch selected successfully.")
-                else: file.write(line)
+        update_config_value("DEFAULT_BRANCH", branch)
     #choice = input("Preview SBLAF Form? (Y/n)").strip().lower()
     #if not choice or choice == "y": auto_submit = False
     #else: auto_submit = True; print("Application will be submitted automatically.")
@@ -66,15 +66,15 @@ def new_application():
 
 @pytest.fixture
 def browser():
-    service = Service(CHROMEDRIVER_PATH)
+    service = Service(config.settings.CHROMEDRIVER_PATH)
     options = Options()
-    options.BinaryLocation = CHROMIUM_PATH
+    options.BinaryLocation = config.settings.CHROMIUM_PATH
     options.add_argument('--ignore-certificate-errors') # Ignore SSL errors
     #options.add_argument('--disable-web-security')  # Optional: Disable web security (use cautiously)
     options.add_argument('--allow-running-insecure-content')  # Allow insecure content
 
     driver = webdriver.Chrome(service=service, options=options)
-    wait = WebDriverWait(driver, WAIT_DURATION)
+    wait = WebDriverWait(driver, config.settings.WAIT_DURATION)
     longwait = WebDriverWait(driver, 999999)
 
     yield driver, wait, longwait # Returns both driver and wait
@@ -138,7 +138,7 @@ def generate_fake_spouse():
     last_name = faker.last_name_female() if gender == 'M' else faker.last_name_male()
     birthdate = faker.date_of_birth()
     formatted_birthdate = birthdate.strftime("%m/%d/%Y")
-    email = DEFAULT_SPOUSE_EMAIL
+    email = config.settings.DEFAULT_SPOUSE_EMAIL
     return (
         first_name, last_name, formatted_birthdate, email
         )

@@ -62,6 +62,7 @@ locators = {
         'previewButton':'//*[@id="udfSection"]/table[2]/tbody/tr/td/table/tbody/tr[2]/td[3]/a',
         'submitButton':'//*[@id="proceedButton"]',
         'showESGButton':'//*[@id="loadingDiv"]/div/div[1]/div[2]/div/a',
+        'submitESGButton':'//*[@id="content-body"]/form/table[4]/tbody/tr/td/table/tbody/tr[2]/td/a',
         'ESGquestionnaire':'//*[@id="content-body"]/form/table[2]/tbody/tr[1]/td/h3/input',
         'userName':'//*[@id="userName"]',
         'password':'password',

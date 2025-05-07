@@ -303,7 +303,7 @@ def submit_sblaf_form(
     click_element(driver, By.XPATH, locators["okayButton"], wait=wait)
     click_element(driver, By.XPATH, locators["previewButton"], wait=wait)
 
-    time.sleep(20)
+    time.sleep(10)
     click_element(driver, By.XPATH, locators["submitButton"], wait=longwait, scrollIntoView=True)
     
     click_element(driver, By.XPATH, locators["showESGButton"], wait=longwait)
@@ -312,24 +312,27 @@ def submit_sblaf_form(
   
     #driver.switch_to.default_content() # exit all frames completely
     
-    input("Press enter to continue")
+    os.system("wmctrl -a Terminal")
+    
+    input("Press Enter after submitting ESG questionnaire.")
+
     #driver.execute_script("submit();")
     #click_element(driver, By.XPATH, locators["submitESGButton"], wait=longwait, scrollIntoView=True)
     
     time.sleep(2)
     
 def first_time_login(driver, wait, longwait, tin, email, password):
-    click_element(driver, By.XPATH, locators["firstTimeLoginButton"], wait=wait)
+    click_element(driver, By.XPATH, locators["firstTimeLoginButton"], wait=longwait)
     select_element(driver, By.XPATH, locators["firstTimeLoginIDType"], "TIN", wait=wait)
     send_keys_to_element(driver, By.XPATH, locators["firstTimeLoginIDNumber"], tin, wait=wait)
     send_keys_to_element(driver, By.XPATH, locators["firstTimeLoginLoginID"], email, wait=wait)
     click_element(driver, By.XPATH, locators["nextButton"], wait=wait)
-    time.sleep(2)
+    time.sleep(22)
     send_keys_to_element(driver, By.NAME, locators["newPassword"], password, wait=longwait)
     send_keys_to_element(driver, By.NAME, locators["confirmPassword"], password, wait=longwait)
     time.sleep(1)
-    click_element(driver, By.XPATH, locators["submitPassword"], wait=wait)
-    time.sleep(3)
+    click_element(driver, By.XPATH, locators["submitPassword"], wait=longwait)
+    time.sleep(5)
     click_element(driver, By.XPATH, locators["goToLogin"], wait=wait)
 
 def sign_in(driver, wait, longwait, email, password, company, branch):
@@ -339,6 +342,7 @@ def sign_in(driver, wait, longwait, email, password, company, branch):
     #longwait.until(EC.presence_of_element_located((By.XPATH, locators["appListing"])))
     time.sleep(2)
     os.system("wmctrl -a Terminal")
+    adobe_sign_retries = ""
     while True:
         first_adobe_sign = input("First Time Adobe Sign? (y/n)")
         if first_adobe_sign == "y" or first_adobe_sign == "Y":
@@ -346,15 +350,13 @@ def sign_in(driver, wait, longwait, email, password, company, branch):
             break;
         elif first_adobe_sign == "n" or first_adobe_sign == "N": 
             first_adobe_sign = "No"
-            adobe_sign_retries = ""
             while True:
                 choice = input("Did you see a retry button? (Y/n)")
                 if not choice or choice == "y" or choice == "Y":
-                    adobe_sign_retries = "No retry button"
-                    break;
-                elif choice == "n" or choice == "N": 
                     while not adobe_sign_retries.isdigit():
                         adobe_sign_retries = input("Adobe Sign Retry #: ")
+                elif choice == "n" or choice == "N": 
+                    adobe_sign_retries = "No retry button"
                 else:
                     continue
                 break;
