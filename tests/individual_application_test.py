@@ -18,14 +18,6 @@ logging.basicConfig(filename="../logs/test_logs.log", level=logging.INFO)
 
 def test_loan_application(new_application, browser, generate_fake_user, generate_fake_spouse, generate_fake_mother, generate_fake_file):
     # Unpack returned values
-    '''
-    profile, first_name, last_name, gender, company, formatted_birthdate,
-    phone, sss_number, branch, application_type, salutation,
-    civil_status, province, city, years_in_operation, website,
-    nature_of_business, business_reg_type, date_of_registration,
-    date_of_expiry, business_reg_number, firm_size, loan_amount,
-    tenor, payment_freq, loan_facility, loan_type
-    '''
     (fake_fname, fake_lname, fake_gender, fake_company, fake_dob, fake_sss, fake_tin,
      fake_application_type, fake_salutation,fake_civilStatus, fake_province, fake_city, fake_yrsInOps, fake_website,
      fake_nob, fake_specific_business, fake_business_addr_ownership, fake_regType, fake_regTypeOthers, fake_dateOfReg, fake_dateOfExp, fake_regNum, fake_firmSize, fake_loanAmount,
@@ -36,14 +28,10 @@ def test_loan_application(new_application, browser, generate_fake_user, generate
     driver, wait, longwait = browser
     fake_email, fake_password, auto_submit, fake_phone, fake_branchChoice = new_application
 
-    #driver.get(BASE_URL)
+    driver.get(BASE_URL)
     
-    #os.system("wmctrl -a Terminal")
-    
-
     #logging.info("Starting test...")
 
-    '''
     start_application(driver, wait, fake_branchChoice)
 
     get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_dob, fake_sss, fake_email, fake_phone)
@@ -54,15 +42,12 @@ def test_loan_application(new_application, browser, generate_fake_user, generate
         fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType, fake_spouse_fname, fake_spouse_lname, fake_spouse_dob, fake_spouse_email,
         fake_mother_fname, fake_mother_lname, fake_attachment_name, fake_file_name, auto_submit
         )
-    '''
     driver.get(LOGIN_PAGE_URL)
     
-    #first_time_login(driver, wait, longwait, fake_tin, fake_email, fake_password)
+    first_time_login(driver, wait, longwait, fake_tin, fake_email, fake_password)
     
     sign_in(driver, wait, longwait, fake_email, fake_password, fake_company, fake_branchChoice)
     
-    #submit_application()
-
     '''
     try:
         assert 1 == 1
@@ -202,15 +187,6 @@ def get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_
     emailField.send_keys(fake_email)
 
     driver.execute_script("goManualForm();")
-
-    '''
-    profile, first_name, last_name, gender, company, formatted_birthdate,
-    phone, sss_number, branch, application_type, salutation,
-    civil_status, province, city, years_in_operation, website,
-    nature_of_business, business_reg_type, date_of_registration,
-    date_of_expiry, business_reg_number, firm_size, loan_amount,
-    tenor, payment_freq, loan_facility, loan_type
-    '''
     
 def submit_sblaf_form(
     driver, wait, longwait, application_type, salutation, company, tin, civilStatus, province, city,
@@ -349,8 +325,8 @@ def first_time_login(driver, wait, longwait, tin, email, password):
     send_keys_to_element(driver, By.XPATH, locators["firstTimeLoginLoginID"], email, wait=wait)
     click_element(driver, By.XPATH, locators["nextButton"], wait=wait)
     time.sleep(2)
-    send_keys_to_element(driver, By.XPATH, locators["newPassword"], password, wait=longwait)
-    send_keys_to_element(driver, By.XPATH, locators["confirmPassword"], password, wait=longwait)
+    send_keys_to_element(driver, By.NAME, locators["newPassword"], password, wait=longwait)
+    send_keys_to_element(driver, By.NAME, locators["confirmPassword"], password, wait=longwait)
     time.sleep(1)
     click_element(driver, By.XPATH, locators["submitPassword"], wait=wait)
     time.sleep(3)
