@@ -309,6 +309,8 @@ def submit_sblaf_form(
     click_element(driver, By.XPATH, locators["okayButton"], wait=wait)
     click_element(driver, By.XPATH, locators["previewButton"], wait=wait)
 
+    pyperclip.copy(company)
+
     notify2.init("Submit Application") 
     n = notify2.Notification("Alert", "Please download the SBLAF form. Submitting application in 20 seconds")
     n.show()
@@ -327,7 +329,7 @@ def submit_sblaf_form(
     
     # Create the initial notification
     notify2.init("Submit ESG")
-    n = notify2.Notification("Alert", "Submitting the ESG in 20 seconds.")
+    n = notify2.Notification("Alert", "Please submit the ESG manually now.")
     n.show()
 
     time.sleep(21)
