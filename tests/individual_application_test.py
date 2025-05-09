@@ -313,13 +313,7 @@ def submit_sblaf_form(
     n = notify2.Notification("Alert", "Please download the SBLAF form. Submitting application in 20 seconds")
     n.show()
 
-    # Countdown from 20 seconds
-    for i in range(20, 0, -1):
-        # Update the message with the remaining time
-        n.update("Alert", f"Submitting the application in {i} seconds.")
-        n.show()
-
-    time.sleep(1)
+    time.sleep(21)
 
     click_element(driver, By.XPATH, locators["submitButton"], wait=longwait, scrollIntoView=True)
     
@@ -336,13 +330,7 @@ def submit_sblaf_form(
     n = notify2.Notification("Alert", "Submitting the ESG in 20 seconds.")
     n.show()
 
-    # Countdown from 20 seconds
-    for i in range(20, 0, -1):
-        # Update the message with the remaining time
-        n.update("Alert", f"Submitting the ESG in {i} seconds.")
-        n.show()
-
-    time.sleep(1)
+    time.sleep(21)
 
     #driver.execute_script("submit();")
     #click_element(driver, By.XPATH, locators["submitESGButton"], wait=longwait, scrollIntoView=True)
@@ -358,15 +346,8 @@ def first_time_login(driver, wait, longwait, tin, email, password):
     notify2.init("OTP")
     n = notify2.Notification("Alert", "Please enter OTP in 30 seconds.")
     n.show()
-
-    # Countdown from 22 seconds
-    for i in range(30, 0, -1):
-        # Update the message with the remaining time
-        n.update("Alert", f"Please enter OTP in {i} seconds.")
-        n.show()
     
-    # Wait for 1 second before updating again
-    time.sleep(1)
+    time.sleep(31)
 
     send_keys_to_element(driver, By.NAME, locators["newPassword"], password, wait=longwait)
     send_keys_to_element(driver, By.NAME, locators["confirmPassword"], password, wait=longwait)
