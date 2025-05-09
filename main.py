@@ -1,4 +1,4 @@
-#!/$HOME/SSP_Automation/venv/bin/python3
+#!/home/user01/SSP_Automation/venv/bin/python3
 
 import pytest
 import os
