@@ -4,3 +4,4 @@ pytest-html
 faker
 pyperclip
 notify2
+dbus-python
