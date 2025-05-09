@@ -308,7 +308,10 @@ def submit_sblaf_form(
     click_element(driver, By.XPATH, locators["okayButton"], wait=wait)
     click_element(driver, By.XPATH, locators["previewButton"], wait=wait)
 
-    time.sleep(10)
+    n = notify2.Notification("Alert", "Please download the SBLAF form.")
+    n.show()
+
+    time.sleep(20)
     click_element(driver, By.XPATH, locators["submitButton"], wait=longwait, scrollIntoView=True)
     
     click_element(driver, By.XPATH, locators["showESGButton"], wait=longwait)
