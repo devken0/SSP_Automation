@@ -146,7 +146,7 @@ def generate_fake_spouse():
 @pytest.fixture
 def generate_fake_file():
     attachment_name = "TESTING"
-    file_name = "$HOME/Documents/Test.pdf"
+    file_name = os.path.expandvars("$HOME/Documents/Test.pdf")
     with open(file_name, 'a'):
         pass
     return attachment_name, file_name
