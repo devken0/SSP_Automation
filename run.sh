@@ -19,6 +19,11 @@ if ! dpkg -s xclip >/dev/null 2>&1; then
     sudo apt install -y xclip 
 fi
 
+if ! dpkg -s libdbus-1-dev libdbus-glib-1-dev python3-dbus > /dev/null 2>&1; then
+    echo "python3-dbus is not installed. Installing..."
+    sudo apt update
+    sudo apt install -y libdbus-1-dev libdbus-glib-1-dev python3-dbus
+
 # Check if venv exists, if not, create it
 if [ ! -d "venv" ]; then
     echo "Virtual environment not found. Creating a new one..."
