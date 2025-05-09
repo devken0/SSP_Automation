@@ -34,8 +34,6 @@ def test_loan_application(new_application, browser, generate_fake_user, generate
     
     #logging.info("Starting test...")
 
-    n = notify2.Notification("Alert", "Test notification.")
-    n.show()
     start_application(driver, wait, fake_branchChoice)
 
     get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_dob, fake_sss, fake_email, fake_phone)
