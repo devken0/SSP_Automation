@@ -15,7 +15,6 @@ from config.locators import iframes
 from config.settings import BASE_URL
 from config.settings import LOGIN_PAGE_URL
 
-notify2.init("SSP Automation")
 logging.basicConfig(filename="../logs/test_logs.log", level=logging.INFO)
 
 def test_loan_application(new_application, browser, generate_fake_user, generate_fake_spouse, generate_fake_mother, generate_fake_file):
@@ -191,7 +190,8 @@ def get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_
 
     driver.execute_script("goManualForm();")
     
-    n = notify2.Notification("Alert", "Enter OTP.")
+    notify2.init("OTP")
+    n = notify2.Notification("Alert", "Enter OTP to proceed.")
     n.show()
     
 def submit_sblaf_form(
@@ -309,10 +309,18 @@ def submit_sblaf_form(
     click_element(driver, By.XPATH, locators["okayButton"], wait=wait)
     click_element(driver, By.XPATH, locators["previewButton"], wait=wait)
 
-    n = notify2.Notification("Alert", "Please download the SBLAF form.")
+    notify.init("Submit Application") 
+    n = notify2.Notification("Alert", "Please download the SBLAF form. Submitting application in 20 seconds")
     n.show()
 
-    time.sleep(20)
+    # Countdown from 20 seconds
+    for i in range(20, 0, -1):
+        # Update the message with the remaining time
+        n.update("Alert", f"Submitting the application in {i} seconds.")
+        n.show()
+
+    time.sleep(1)
+
     click_element(driver, By.XPATH, locators["submitButton"], wait=longwait, scrollIntoView=True)
     
     click_element(driver, By.XPATH, locators["showESGButton"], wait=longwait)
@@ -323,13 +331,21 @@ def submit_sblaf_form(
     
     os.system("wmctrl -a Terminal")
     
-    n = notify2.Notification("Alert", "Please submit the ESG Questionnaire manually.")
+    # Create the initial notification
+    notify2.init("Submit ESG")
+    n = notify2.Notification("Alert", "Submitting the ESG in 20 seconds.")
     n.show()
+
+    # Countdown from 20 seconds
+    for i in range(20, 0, -1):
+        # Update the message with the remaining time
+        n.update("Alert", f"Submitting the ESG in {i} seconds.")
+        n.show()
+
+    time.sleep(1)
 
     #driver.execute_script("submit();")
     #click_element(driver, By.XPATH, locators["submitESGButton"], wait=longwait, scrollIntoView=True)
-    
-    time.sleep(20)
     
 def first_time_login(driver, wait, longwait, tin, email, password):
     click_element(driver, By.XPATH, locators["firstTimeLoginButton"], wait=longwait)
@@ -339,11 +355,12 @@ def first_time_login(driver, wait, longwait, tin, email, password):
     click_element(driver, By.XPATH, locators["nextButton"], wait=wait)
 
     # Create the initial notification
-    n = notify2.Notification("Alert", "Please enter OTP in 22 seconds.")
+    notify2.init("OTP")
+    n = notify2.Notification("Alert", "Please enter OTP in 30 seconds.")
     n.show()
 
     # Countdown from 22 seconds
-    for i in range(22, 0, -1):
+    for i in range(30, 0, -1):
         # Update the message with the remaining time
         n.update("Alert", f"Please enter OTP in {i} seconds.")
         n.show()
