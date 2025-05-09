@@ -12,6 +12,13 @@ if ! dpkg -s python3-venv >/dev/null 2>&1; then
     sudo apt install -y python3-venv
 fi
 
+# Check if xclip is installed, if not, install it
+if ! dpkg -s xclip >/dev/null 2>&1; then
+    echo "xclip is not installed. Installing..."
+    sudo apt update
+    sudo apt install -y xclip 
+fi
+
 # Check if venv exists, if not, create it
 if [ ! -d "venv" ]; then
     echo "Virtual environment not found. Creating a new one..."
