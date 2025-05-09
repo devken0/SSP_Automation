@@ -23,6 +23,7 @@ if ! dpkg -s libdbus-1-dev libdbus-glib-1-dev python3-dbus > /dev/null 2>&1; the
     echo "python3-dbus is not installed. Installing..."
     sudo apt update
     sudo apt install -y libdbus-1-dev libdbus-glib-1-dev python3-dbus
+fi
 
 # Check if venv exists, if not, create it
 if [ ! -d "venv" ]; then
