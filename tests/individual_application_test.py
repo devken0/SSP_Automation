@@ -191,6 +191,9 @@ def get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_
 
     driver.execute_script("goManualForm();")
     
+    n = notify2.Notification("Alert", "Enter OTP.")
+    n.show()
+    
 def submit_sblaf_form(
     driver, wait, longwait, application_type, salutation, company, tin, civilStatus, province, city,
     years_in_operation, website, nature_of_business, specific_business, business_addr_ownership,
@@ -334,7 +337,20 @@ def first_time_login(driver, wait, longwait, tin, email, password):
     send_keys_to_element(driver, By.XPATH, locators["firstTimeLoginIDNumber"], tin, wait=wait)
     send_keys_to_element(driver, By.XPATH, locators["firstTimeLoginLoginID"], email, wait=wait)
     click_element(driver, By.XPATH, locators["nextButton"], wait=wait)
-    time.sleep(22)
+
+    # Create the initial notification
+    n = notify2.Notification("Alert", "Please enter OTP in 22 seconds.")
+    n.show()
+
+    # Countdown from 22 seconds
+    for i in range(22, 0, -1):
+        # Update the message with the remaining time
+        n.update("Alert", f"Please enter OTP in {i} seconds.")
+        n.show()
+    
+    # Wait for 1 second before updating again
+    time.sleep(1)
+
     send_keys_to_element(driver, By.NAME, locators["newPassword"], password, wait=longwait)
     send_keys_to_element(driver, By.NAME, locators["confirmPassword"], password, wait=longwait)
     time.sleep(1)
