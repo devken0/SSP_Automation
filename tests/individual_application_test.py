@@ -3,6 +3,7 @@ import os
 import logging
 import sys
 import pyperclip
+import notify2
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
@@ -14,6 +15,7 @@ from config.locators import iframes
 from config.settings import BASE_URL
 from config.settings import LOGIN_PAGE_URL
 
+notify2.init("SSP Automation")
 logging.basicConfig(filename="../logs/test_logs.log", level=logging.INFO)
 
 def test_loan_application(new_application, browser, generate_fake_user, generate_fake_spouse, generate_fake_mother, generate_fake_file):
@@ -32,6 +34,8 @@ def test_loan_application(new_application, browser, generate_fake_user, generate
     
     #logging.info("Starting test...")
 
+    n = notify2.Notification("Alert", "Test notification.")
+    n.show()
     start_application(driver, wait, fake_branchChoice)
 
     get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_dob, fake_sss, fake_email, fake_phone)
@@ -42,6 +46,7 @@ def test_loan_application(new_application, browser, generate_fake_user, generate
         fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType, fake_spouse_fname, fake_spouse_lname, fake_spouse_dob, fake_spouse_email,
         fake_mother_fname, fake_mother_lname, fake_attachment_name, fake_file_name, auto_submit
         )
+
     driver.get(LOGIN_PAGE_URL)
     
     first_time_login(driver, wait, longwait, fake_tin, fake_email, fake_password)
@@ -314,12 +319,13 @@ def submit_sblaf_form(
     
     os.system("wmctrl -a Terminal")
     
-    input("Press Enter after submitting ESG questionnaire.")
+    n = notify2.Notification("Alert", "Please submit the ESG Questionnaire manually.")
+    n.show()
 
     #driver.execute_script("submit();")
     #click_element(driver, By.XPATH, locators["submitESGButton"], wait=longwait, scrollIntoView=True)
     
-    time.sleep(2)
+    time.sleep(20)
     
 def first_time_login(driver, wait, longwait, tin, email, password):
     click_element(driver, By.XPATH, locators["firstTimeLoginButton"], wait=longwait)
