@@ -159,7 +159,7 @@ def get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_
     idTypeList = wait.until(EC.presence_of_element_located((By.XPATH, locators["idTypeList"])))
     idTypeList.click()
     
-    idTypeChoice = wait.until(EC.presence_of_element_located((By.XPATH, locators["idTypeChoice"])))
+    idTypeChoice = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, locators["idTypeChoice"])))
     driver.execute_script("arguments[0].scrollIntoView(true);", idTypeChoice)
     idTypeChoice.click()
 
