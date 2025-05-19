@@ -8,7 +8,7 @@ locators = {
         "firstNameField":'firstCustomerName',
         "lastNameField":'lastCustomerName',
         "idTypeList":'//*[@id="mdcCusIdType"]/div[1]',
-        "idTypeChoice":'//*[@id="idTypeListCus"]/li[45]',
+        "idTypeChoice":'[data-value="SS"]',
         "idNumberField":'//*[@id="customerIdNum"]',
         "birthDateField":'customerDob',
         "sexList":'//*[@id="mdcCustomerSex"]/div[1]',
