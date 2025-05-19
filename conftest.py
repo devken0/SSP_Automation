@@ -51,7 +51,7 @@ def new_application():
     if not choice or choice == "y": branch = config.settings.DEFAULT_BRANCH
     else: 
         os.system(f"cat {branches_file_path}") 
-        print("Please find the exact name of your branch above.")
+        print("Please copy the exact name of your branch above. DO NOT USE Ctrl+C/Ctrl+V, click to copy and paste instead.")
         branch = input("New branch: ").strip()
         update_config_value("DEFAULT_BRANCH", branch)
     #choice = input("Preview SBLAF Form? (Y/n)").strip().lower()
