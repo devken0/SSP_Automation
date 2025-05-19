@@ -37,11 +37,17 @@ def new_application():
     os.system("wmctrl -a Terminal")
     email = input("\nPlease enter your email: ")
     password = config.settings.DEFAULT_PASSWORD
-    choice = input(f"Use default spouse email {config.settings.DEFAULT_SPOUSE_EMAIL}? (Y/n)").strip().lower()
-    if not choice or choice == "y": spouse_email = config.settings.DEFAULT_SPOUSE_EMAIL
+    choice = input(f"W/ spouse application? (Y/n)").strip().lower()
+    if not choice or choice == "y":
+        married = True  
+        choice = input(f"Use default spouse email {config.settings.DEFAULT_SPOUSE_EMAIL}? (Y/n)").strip().lower()
+        if not choice or choice == "y": spouse_email = config.settings.DEFAULT_SPOUSE_EMAIL
+        else: 
+            spouse_email = input("New spouse email: ").strip()
+            update_config_value("DEFAULT_SPOUSE_EMAIL", spouse_email)
     else: 
-        spouse_email = input("New spouse email: ").strip()
-        update_config_value("DEFAULT_SPOUSE_EMAIL", spouse_email)
+        married = False
+        print("Single application type will be selected.")
     choice = input(f"Use default phone number {config.settings.DEFAULT_PHONE}? (Y/n)").strip().lower()
     if not choice or choice == "y": phone = config.settings.DEFAULT_PHONE
     else: 
@@ -61,7 +67,7 @@ def new_application():
     print("Starting browser...")
     time.sleep(2)
     return (
-        email, password, auto_submit, phone, branch
+        email, password, auto_submit, phone, branch, married
     )
 
 @pytest.fixture
@@ -94,7 +100,7 @@ def generate_fake_user():
     branch = "BGC-10TH AVENUE"
     application_type = "New Application"
     salutation = "Mister" if gender == "M" else "Miss"
-    civil_status = "MARRIED"
+    civil_status = "" 
     province = "METRO MANILA"
     city = "PASAY CITY"
     years_in_operation = "17"
@@ -150,7 +156,3 @@ def generate_fake_file():
     with open(file_name, 'a'):
         pass
     return attachment_name, file_name
-    
-
-
-

@@ -19,15 +19,16 @@ logging.basicConfig(filename="../logs/test_logs.log", level=logging.INFO)
 
 def test_loan_application(new_application, browser, generate_fake_user, generate_fake_spouse, generate_fake_mother, generate_fake_file):
     # Unpack returned values
+    fake_email, fake_password, auto_submit, fake_phone, fake_branchChoice, fake_married = new_application
     (fake_fname, fake_lname, fake_gender, fake_company, fake_dob, fake_sss, fake_tin,
      fake_application_type, fake_salutation,fake_civilStatus, fake_province, fake_city, fake_yrsInOps, fake_website,
      fake_nob, fake_specific_business, fake_business_addr_ownership, fake_regType, fake_regTypeOthers, fake_dateOfReg, fake_dateOfExp, fake_regNum, fake_firmSize, fake_loanAmount,
      fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType) = generate_fake_user
+    fake_civilStatus = "MARRIED" if fake_married else "SINGLE"
     (fake_spouse_fname, fake_spouse_lname, fake_spouse_dob, fake_spouse_email) = generate_fake_spouse
     (fake_mother_fname, fake_mother_lname) = generate_fake_mother
     fake_attachment_name, fake_file_name = generate_fake_file
     driver, wait, longwait = browser
-    fake_email, fake_password, auto_submit, fake_phone, fake_branchChoice = new_application
 
     driver.get(BASE_URL)
     
@@ -41,7 +42,7 @@ def test_loan_application(new_application, browser, generate_fake_user, generate
         driver, wait, longwait, fake_application_type, fake_salutation, fake_company, fake_tin, fake_civilStatus, fake_province, fake_city,
         fake_yrsInOps, fake_website, fake_nob, fake_specific_business, fake_business_addr_ownership, fake_regType, fake_regTypeOthers, fake_dateOfReg, fake_dateOfExp, fake_regNum, fake_firmSize, fake_loanAmount,
         fake_tenor, fake_paymentFreq, fake_loanFacility, fake_loanType, fake_spouse_fname, fake_spouse_lname, fake_spouse_dob, fake_spouse_email,
-        fake_mother_fname, fake_mother_lname, fake_attachment_name, fake_file_name, auto_submit
+        fake_mother_fname, fake_mother_lname, fake_attachment_name, fake_file_name, auto_submit 
         )
 
     driver.get(LOGIN_PAGE_URL)
@@ -193,28 +194,33 @@ def get_application_otp(driver, wait, fake_fname, fake_lname, fake_gender, fake_
     notify2.init("OTP")
     n = notify2.Notification("Alert", "Enter OTP to proceed.")
     n.show()
-    
+
 def submit_sblaf_form(
     driver, wait, longwait, application_type, salutation, company, tin, civilStatus, province, city,
     years_in_operation, website, nature_of_business, specific_business, business_addr_ownership,
     business_reg_type, business_reg_type_others, date_of_registration,
     date_of_expiry, business_reg_number, firm_size, loan_amount, tenor, payment_freq,
     loan_facility, loan_type, spouse_fname, spouse_lname, spouse_dob, spouse_email,
-    mother_fname, mother_lname, attachment_name, file_name, auto_submit
+    mother_fname, mother_lname, attachment_name, file_name, auto_submit 
     ):
     
     switch_to_iframe(driver, By.ID, iframes["sblaf_main_iframe"], wait=longwait)
     
     click_element(driver, By.XPATH, application_types[f"{application_type}"], wait=wait)
     select_element(driver, By.XPATH, locators["salutationList"], salutation, wait=wait, scrollIntoView=True)
+    
     select_element(driver, By.XPATH, locators["civilStatusList"], civilStatus, wait=wait)
+
     select_element(driver, By.XPATH, locators["pobProvinceList"], province, wait=wait)
     select_element(driver, By.XPATH, locators["pobCityList"], city, wait=wait)
     send_keys_to_element(driver, By.XPATH, locators["tinField"], tin, wait=wait)
-    send_keys_to_element(driver, By.XPATH, locators["spouseFirstNameField"], spouse_fname, wait=wait, scrollIntoView=True)
-    send_keys_to_element(driver, By.XPATH, locators["spouseLastNameField"], spouse_lname, wait=wait)
-    send_keys_to_element(driver, By.XPATH, locators["spouseDob"], spouse_dob, wait=wait)
-    send_keys_to_element(driver, By.XPATH, locators["spouseEmail"], spouse_email, wait=wait)
+
+    if civilStatus == "MARRIED":
+        send_keys_to_element(driver, By.XPATH, locators["spouseFirstNameField"], spouse_fname, wait=wait, scrollIntoView=True)
+        send_keys_to_element(driver, By.XPATH, locators["spouseLastNameField"], spouse_lname, wait=wait)
+        send_keys_to_element(driver, By.XPATH, locators["spouseDob"], spouse_dob, wait=wait)
+        send_keys_to_element(driver, By.XPATH, locators["spouseEmail"], spouse_email, wait=wait)
+
     send_keys_to_element(driver, By.XPATH, locators["motherFirstNameField"], mother_fname, wait=wait, scrollIntoView=True)
     send_keys_to_element(driver, By.XPATH, locators["motherLastNameField"], spouse_lname, wait=wait)
     select_element(driver, By.XPATH, locators["provinceList"], province, wait=wait, scrollIntoView=True)
