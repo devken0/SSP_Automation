@@ -19,7 +19,7 @@ if ! dpkg -s xclip >/dev/null 2>&1; then
     sudo apt install -y xclip 
 fi
 
-if ! dpkg -s libdbus-1-dev libdbus-glib-1-dev python3-dbus python3-dev > /dev/null 2>&1; then
+if ! dpkg -s libdbus-1-dev libdbus-glib-1-dev python3-dbus python3-dev python3-wheel > /dev/null 2>&1; then
     echo "python3-dbus is not installed. Installing..."
     sudo apt update
     sudo apt install -y libdbus-1-dev libdbus-glib-1-dev python3-dbus python3-dev
