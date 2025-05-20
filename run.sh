@@ -25,6 +25,13 @@ if ! dpkg -s libdbus-1-dev libdbus-glib-1-dev python3-dbus python3-dev python3-w
     sudo apt install -y libdbus-1-dev libdbus-glib-1-dev python3-dbus python3-dev
 fi
 
+# Check if xclip is installed, if not, install it
+if ! dpkg -s chromium >/dev/null 2>&1; then
+    echo "chromium is not installed. Installing..."
+    sudo apt update
+    sudo apt install -y chromium 
+fi
+
 # Check if venv exists, if not, create it
 if [ ! -d "venv" ]; then
     echo "Virtual environment not found. Creating a new one..."
