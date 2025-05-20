@@ -5,24 +5,30 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Update package lists
+sudo apt update
+
 # Check if python3-venv is installed, if not, install it
 if ! dpkg -s python3-venv >/dev/null 2>&1; then
     echo "python3-venv is not installed. Installing..."
-    sudo apt update
     sudo apt install -y python3-venv
 fi
 
 # Check if xclip is installed, if not, install it
 if ! dpkg -s xclip >/dev/null 2>&1; then
     echo "xclip is not installed. Installing..."
-    sudo apt update
     sudo apt install -y xclip 
 fi
 
 if ! dpkg -s libdbus-1-dev libdbus-glib-1-dev python3-dbus python3-dev python3-wheel > /dev/null 2>&1; then
     echo "python3-dbus is not installed. Installing..."
-    sudo apt update
     sudo apt install -y libdbus-1-dev libdbus-glib-1-dev python3-dbus python3-dev
+fi
+
+
+if ! dpkg -s chromium > /dev/null 2>&1; then
+    echo "chromium is not installed. Installing..."
+    sudo apt install -y chromium
 fi
 
 # Check if venv exists, if not, create it
